@@ -1,6 +1,23 @@
-apply plugin: 'java'
-apply plugin: 'application'
+buildscript {
+    ext {
+        springBootVersion = '2.2.0.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
 
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'application'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+group = 'cz.mzk'
+version = '1.0.0'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
@@ -9,11 +26,8 @@ repositories {
 }
 
 dependencies {
-    compile group: 'org.apache.solr', name: 'solr-solrj', version: '7.2.1'
-
-    compile group: 'log4j', name: 'log4j', version: '1.2.17'
-    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
-    compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
+    implementation group: 'org.apache.solr', name: 'solr-solrj', version: '8.4.1'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-batch', version: '2.2.4.RELEASE'
 }
 
 wrapper{
