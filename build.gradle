@@ -27,10 +27,11 @@ repositories {
 
 dependencies {
     implementation group: 'org.apache.solr', name: 'solr-solrj', version: '8.4.1'
+    compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: '2.10.2'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-batch', version: '2.2.4.RELEASE'
 }
 
-wrapper{
+wrapper {
     gradleVersion = '6.1.1'
     distributionType = Wrapper.DistributionType.BIN
 }

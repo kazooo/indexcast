@@ -1,5 +1,7 @@
 package cz.mzk.configuration;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -27,6 +29,11 @@ public class BatchConfiguration {
 
     @Autowired
     SolrMigrationStepBuilder migrationStepBuilder;
+
+    @Autowired
+    MigrationToolConfiguration toolConfiguration;
+
+    private final Logger logger = LoggerFactory.getLogger(BatchConfiguration.class);
 
     @Bean
     public Job parallelStepsJob() {
