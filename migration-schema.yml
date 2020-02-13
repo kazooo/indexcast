@@ -3,3 +3,6 @@ uniqueKey: PID
 fields:
   PID : PID
   root : root
+
+processors:
+  - TestProcessor

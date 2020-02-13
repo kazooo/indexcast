@@ -1,5 +1,6 @@
 package cz.mzk.model;
 
+import java.util.List;
 import java.util.Map;
 
 
@@ -8,6 +9,7 @@ import java.util.Map;
  */
 
 public class MigrationYAMLSchema {
-    public Map<String, String> fields;
     public String uniqueKey;
+    public Map<String, String> fields;
+    public List<String> processors;
 }

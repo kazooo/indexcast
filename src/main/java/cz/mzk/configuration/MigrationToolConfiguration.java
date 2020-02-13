@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 
 /**
@@ -50,5 +51,9 @@ public class MigrationToolConfiguration {
         File file = new File(pathToSchema);
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         this.migrationYAMLSchema = mapper.readValue(file, MigrationYAMLSchema.class);
+    }
+
+    public List<String> getProcessorClassNames() {
+        return migrationYAMLSchema.processors;
     }
 }

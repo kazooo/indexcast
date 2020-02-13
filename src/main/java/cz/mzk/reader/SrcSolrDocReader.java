@@ -1,15 +1,17 @@
 package cz.mzk.reader;
 
 import cz.mzk.model.CursorMarkGlobalStorage;
-import org.apache.solr.common.SolrDocumentList;
+import org.apache.solr.common.SolrInputDocument;
 import org.springframework.batch.item.ItemReader;
+
+import java.util.List;
 
 
 /**
  * @author Aleksei Ermak
  */
 
-public class SrcSolrDocReader implements ItemReader<SolrDocumentList> {
+public class SrcSolrDocReader implements ItemReader<List<SolrInputDocument>> {
 
     private CursorMarkGlobalStorage cursorMarkStorage;
 
@@ -18,7 +20,7 @@ public class SrcSolrDocReader implements ItemReader<SolrDocumentList> {
     }
 
     @Override
-    public SolrDocumentList read() {
+    public List<SolrInputDocument> read() {
         return null;
     }
 }
