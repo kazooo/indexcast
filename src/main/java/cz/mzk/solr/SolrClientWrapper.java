@@ -1,4 +1,4 @@
-package cz.mzk.model;
+package cz.mzk.solr;
 
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
@@ -10,9 +10,11 @@ import org.apache.solr.common.SolrInputDocument;
 
 import java.io.IOException;
 
+
 /**
  * @author Aleksei Ermak
  */
+
 public class SolrClientWrapper {
 
     private SolrClient client;

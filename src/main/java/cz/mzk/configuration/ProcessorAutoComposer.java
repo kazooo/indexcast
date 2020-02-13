@@ -1,6 +1,6 @@
 package cz.mzk.configuration;
 
-import cz.mzk.processor.SolrDocProcessor;
+import cz.mzk.processor.SolrDocProcessorInterface;
 import org.apache.solr.common.SolrInputDocument;
 import org.springframework.batch.item.support.CompositeItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,7 @@ public class ProcessorAutoComposer {
             File[] files = getFilesInPackage(packageName);
             List<String> processorNames = toolConfiguration.getProcessorClassNames();
             List<String> chosenProcessorNames = filterFilesByProcessorClassNames(files, processorNames);
-            List<SolrDocProcessor> processors = instantiateProcessors(packageName, chosenProcessorNames);
+            List<SolrDocProcessorInterface> processors = instantiateProcessors(packageName, chosenProcessorNames);
             compositeProcessor.setDelegates(processors);
         } catch (IOException | ClassNotFoundException | InstantiationException |
                 InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
@@ -66,14 +66,14 @@ public class ProcessorAutoComposer {
         return acceptedClassNames;
     }
 
-    private List<SolrDocProcessor> instantiateProcessors(String packageName, List<String> classNames)
+    private List<SolrDocProcessorInterface> instantiateProcessors(String packageName, List<String> classNames)
             throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException,
             InvocationTargetException, InstantiationException {
-        List<SolrDocProcessor> instances = new ArrayList<>();
+        List<SolrDocProcessorInterface> instances = new ArrayList<>();
         for (String className : classNames) {
             Class<?> processorClass = Class.forName(packageName + '.' + className);
             Object processor = processorClass.getConstructor().newInstance();
-            instances.add((SolrDocProcessor)processor);
+            instances.add((SolrDocProcessorInterface)processor);
         }
         return instances;
     }
