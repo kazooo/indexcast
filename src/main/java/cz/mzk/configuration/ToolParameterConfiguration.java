@@ -39,7 +39,7 @@ public class ToolParameterConfiguration {
     @Value("${SCHEMA_PATH}")
     private String pathToSchema;
 
-    private String coreName = "kramerius";
+    private String coreName = "solr/kramerius";
     private MigrationYAMLSchema migrationYAMLSchema;
 
     private final Logger logger = LoggerFactory.getLogger(ToolLifecycleConfiguration.class);
@@ -88,5 +88,9 @@ public class ToolParameterConfiguration {
 
     public String getCoreName() {
         return coreName;
+    }
+
+    public String getUniqKey() {
+        return migrationYAMLSchema.uniqueKey;
     }
 }

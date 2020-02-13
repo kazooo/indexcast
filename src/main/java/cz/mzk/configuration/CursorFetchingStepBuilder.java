@@ -2,6 +2,7 @@ package cz.mzk.configuration;
 
 import cz.mzk.model.CursorMarkGlobalStorage;
 import cz.mzk.reader.SrcSolrCursorReader;
+import cz.mzk.solr.SrcSolrClient;
 import cz.mzk.writer.CursorStorageWriter;
 import javafx.util.Pair;
 import org.springframework.batch.core.Step;
@@ -20,24 +21,31 @@ import org.springframework.context.annotation.Configuration;
 public class CursorFetchingStepBuilder {
 
     @Autowired
-    CursorMarkGlobalStorage cursorMarkStorage;
-
-    @Autowired
     StepBuilderFactory stepBuilderFactory;
 
+    @Autowired
+    ToolParameterConfiguration toolParameterConfiguration;
+
+    @Autowired
+    CursorMarkGlobalStorage cursorMarkGlobalStorage;
+
+    @Autowired
+    SrcSolrClient solrClient;
+
     public Step build(String name) {
+        // until reader can fetch cursors and doesnt return null, jobs will run in infinite loop
         return stepBuilderFactory.get(name)
-                .<Pair<String, Integer>, Pair<String, Integer>>chunk(1)
+                .<Pair<String, Integer>, Pair<String, Integer>>chunk(1)  // read only 1 cursor then go to writing step
                 .reader(fetchReader())
                 .writer(fetchWriter())
                 .build();
     }
 
     private ItemReader<Pair<String, Integer>> fetchReader() {
-        return new SrcSolrCursorReader();
+        return new SrcSolrCursorReader(toolParameterConfiguration, cursorMarkGlobalStorage, solrClient);
     }
 
     private ItemWriter<Pair<String, Integer>> fetchWriter() {
-        return new CursorStorageWriter(cursorMarkStorage);
+        return new CursorStorageWriter(cursorMarkGlobalStorage);
     }
 }

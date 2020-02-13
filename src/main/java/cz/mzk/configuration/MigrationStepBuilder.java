@@ -2,6 +2,7 @@ package cz.mzk.configuration;
 
 import cz.mzk.model.CursorMarkGlobalStorage;
 import cz.mzk.reader.SrcSolrDocReader;
+import cz.mzk.solr.SrcSolrClient;
 import cz.mzk.writer.DstSolrDocWriter;
 import org.apache.solr.common.SolrInputDocument;
 import org.springframework.batch.core.Step;
@@ -22,17 +23,24 @@ import java.util.List;
 public class MigrationStepBuilder {
 
     @Autowired
-    CursorMarkGlobalStorage cursorMarkStorage;
-
-    @Autowired
     StepBuilderFactory stepBuilderFactory;
 
     @Autowired
     ProcessorAutoComposer processorComposer;
 
+    @Autowired
+    ToolParameterConfiguration toolParameterConfiguration;
+
+    @Autowired
+    CursorMarkGlobalStorage cursorMarkGlobalStorage;
+
+    @Autowired
+    SrcSolrClient solrClient;
+
     public Step build(String name) {
+        // until reader can get cursors and doesnt return null, jobs will run in infinite loop
         return stepBuilderFactory.get(name)
-                .<List<SolrInputDocument>, List<SolrInputDocument>>chunk(1)
+                .<List<SolrInputDocument>, List<SolrInputDocument>>chunk(1)  // process only 1 batch
                 .reader(migrationReader())
                 .processor(compositeProcessor())
                 .writer(migrationWriter())
@@ -40,7 +48,7 @@ public class MigrationStepBuilder {
     }
 
     private ItemReader<List<SolrInputDocument>> migrationReader() {
-        return new SrcSolrDocReader(cursorMarkStorage);
+        return new SrcSolrDocReader(toolParameterConfiguration, cursorMarkGlobalStorage, solrClient);
     }
 
     private ItemWriter<List<SolrInputDocument>> migrationWriter() {

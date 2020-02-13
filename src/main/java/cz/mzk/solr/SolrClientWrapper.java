@@ -1,5 +1,6 @@
 package cz.mzk.solr;
 
+import javafx.util.Pair;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -28,11 +29,22 @@ public class SolrClientWrapper {
                 .build();
     }
 
-    public SolrDocumentList query(SolrQuery query) {
+    public Pair<String, SolrDocumentList> queryWithCursor(SolrQuery query) {
         final QueryResponse response;
         try {
             response = client.query(coreName, query);
-            return response.getResults();
+            return new Pair<>(response.getNextCursorMark(), response.getResults());
+        } catch (SolrServerException | IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public String queryCursor(SolrQuery query) {
+        final QueryResponse response;
+        try {
+            response = client.query(coreName, query);
+            return response.getNextCursorMark();
         } catch (SolrServerException | IOException e) {
             e.printStackTrace();
         }
