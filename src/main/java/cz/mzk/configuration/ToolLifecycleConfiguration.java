@@ -56,6 +56,7 @@ public class ToolLifecycleConfiguration {
         }
 
         Flow mainFlow = flowBuilder.build();
+        logger.debug("Create " + threads + " migration flows and 1 cursor fetching flows.");
 
         return (jobBuilderFactory.get("parallel-solr-migration")
                 .incrementer(new RunIdIncrementer())

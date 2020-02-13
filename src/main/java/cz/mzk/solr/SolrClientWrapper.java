@@ -8,6 +8,8 @@ import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
@@ -20,6 +22,7 @@ public class SolrClientWrapper {
 
     private SolrClient client;
     private String coreName;
+    private final Logger logger = LoggerFactory.getLogger(SolrClientWrapper.class);
 
     public SolrClientWrapper(String url, String coreName) {
         this.coreName = coreName;
@@ -55,7 +58,7 @@ public class SolrClientWrapper {
         try {
             client.add(doc);
         } catch (SolrServerException | IOException e) {
-            e.printStackTrace();
+            logger.error("Can't index document!");
         }
     }
 
@@ -63,7 +66,7 @@ public class SolrClientWrapper {
         try {
             client.commit();
         } catch (SolrServerException | IOException e) {
-            e.printStackTrace();
+            logger.error("Can't commit changes!");
         }
     }
 }
