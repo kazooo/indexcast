@@ -19,7 +19,7 @@ import org.springframework.core.task.SimpleAsyncTaskExecutor;
 
 @Configuration
 @EnableBatchProcessing
-public class BatchConfiguration {
+public class ToolLifecycleConfiguration {
 
     @Autowired
     JobBuilderFactory jobBuilderFactory;
@@ -28,26 +28,33 @@ public class BatchConfiguration {
     CursorFetchingStepBuilder cursorFetchStepBuilder;
 
     @Autowired
-    SolrMigrationStepBuilder migrationStepBuilder;
+    MigrationStepBuilder migrationStepBuilder;
 
     @Autowired
-    MigrationToolConfiguration toolConfiguration;
+    ToolParameterConfiguration toolConfiguration;
 
-    private final Logger logger = LoggerFactory.getLogger(BatchConfiguration.class);
+    private final Logger logger = LoggerFactory.getLogger(ToolLifecycleConfiguration.class);
 
     @Bean
     public Job parallelStepsJob() {
+        FlowBuilder<Flow> flowBuilder = new FlowBuilder<>("main-flow");
+        FlowBuilder.SplitBuilder<Flow> splitBuilder = flowBuilder.split(new SimpleAsyncTaskExecutor());
 
         Flow cursorFetchFlow = new FlowBuilder<Flow>("cursor-fetch")
                 .start(cursorFetchStepBuilder.build("cursor-fetch"))
                 .build();
+        splitBuilder.add(cursorFetchFlow);
 
-        Flow migrationFlow = new FlowBuilder<Flow>("migration-1")
-                .start(migrationStepBuilder.build("migration-1"))
-                .build();
 
-        Flow mainFlow = new FlowBuilder<Flow>("main-flow")
-                .split(new SimpleAsyncTaskExecutor()).add(cursorFetchFlow, migrationFlow).build();
+        int threads = toolConfiguration.getThreads();
+        for (int i = 0; i < threads; i++) {
+            Flow migrationFlow = new FlowBuilder<Flow>("migration-" + i)
+                    .start(migrationStepBuilder.build("migration-" + i))
+                    .build();
+            splitBuilder.add(migrationFlow);
+        }
+
+        Flow mainFlow = flowBuilder.build();
 
         return (jobBuilderFactory.get("parallel-solr-migration")
                 .incrementer(new RunIdIncrementer())

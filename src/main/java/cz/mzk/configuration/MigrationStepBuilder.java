@@ -19,7 +19,7 @@ import java.util.List;
  */
 
 @Configuration
-public class SolrMigrationStepBuilder {
+public class MigrationStepBuilder {
 
     @Autowired
     CursorMarkGlobalStorage cursorMarkStorage;
@@ -28,7 +28,7 @@ public class SolrMigrationStepBuilder {
     StepBuilderFactory stepBuilderFactory;
 
     @Autowired
-    ProcessorComposer processorComposer;
+    ProcessorAutoComposer processorComposer;
 
     public Step build(String name) {
         return stepBuilderFactory.get(name)

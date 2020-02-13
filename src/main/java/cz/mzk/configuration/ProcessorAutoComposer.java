@@ -20,10 +20,10 @@ import java.util.List;
  */
 
 @Component
-public class ProcessorComposer {
+public class ProcessorAutoComposer {
 
     @Autowired
-    private MigrationToolConfiguration toolConfiguration;
+    private ToolParameterConfiguration toolConfiguration;
 
     private final String packageName = "cz.mzk.processor";
 
