@@ -42,7 +42,7 @@ public class SrcSolrCursorReader implements ItemReader<Pair<String, Integer>> {
             cursorStorage.close();
             return null;
         } else {
-            logger.info("[read] " + lastCursorMark);
+            logger.debug("[read] " + lastCursorMark);
             Pair<String, Integer> pair = new Pair<>(lastCursorMark, query.getRows());
             lastCursorMark = nextCursorMark;
             return pair;

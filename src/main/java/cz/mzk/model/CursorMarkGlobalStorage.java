@@ -26,7 +26,7 @@ public class CursorMarkGlobalStorage {
 
     public void addCursorAndObjNum(String cursorMark, Integer objNum) {
         synchronized (cursorMarksWithObjectsCount) {
-            logger.info("[store] " + cursorMark);
+            logger.debug("[store] " + cursorMark);
             cursorMarksWithObjectsCount.add(new Pair<>(cursorMark, objNum));
         }
     }
@@ -39,7 +39,7 @@ public class CursorMarkGlobalStorage {
             return null;
         }
         Pair<String, Integer> cursorWithMaxObj = cursorMarksWithObjectsCount.remove(0);
-        logger.info("[return] " + cursorWithMaxObj.getKey());
+        logger.debug("[return] " + cursorWithMaxObj.getKey());
         return cursorWithMaxObj;
     }
 
