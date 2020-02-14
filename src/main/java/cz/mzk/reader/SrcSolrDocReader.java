@@ -75,7 +75,7 @@ public class SrcSolrDocReader implements ItemReader<List<SolrInputDocument>> {
     private SolrQuery generateQueryFromCursor(String cursor) {
         SolrQuery parameters = new SolrQuery();
         parameters.setQuery(queryStr);
-        parameters.setRows(docsPerRequest);
+        parameters.setRows(getRows());
         parameters.setRequestHandler("select");
         parameters.setSort(SolrQuery.SortClause.asc(uniqKey));
         parameters.set(CursorMarkParams.CURSOR_MARK_PARAM, cursor);
@@ -90,5 +90,9 @@ public class SrcSolrDocReader implements ItemReader<List<SolrInputDocument>> {
             inputDocs.add(inputDoc);
         }
         return inputDocs;
+    }
+
+    private int getRows() {
+        return Math.min((maxObjects - done), docsPerRequest);
     }
 }
