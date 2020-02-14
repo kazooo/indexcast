@@ -1,5 +1,6 @@
 package cz.mzk.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrInputDocument;
 
@@ -15,8 +16,13 @@ import java.util.Map;
 
 public class MigrationYAMLSchema {
 
+    @JsonProperty(required = true)
     private String uniqueKey;
+
+    @JsonProperty(required = true)
     private Map<String, String> fields;
+
+    @JsonProperty(required = false)
     private List<String> processors;
 
     private List<String> requestFields;

@@ -28,11 +28,15 @@ public class ProcessorAutoComposer {
     private final String packageName = "cz.mzk.processor";
 
     public CompositeItemProcessor<List<SolrInputDocument>, List<SolrInputDocument>> composite() {
+        List<String> processorNames = toolConfiguration.getProcessorClassNames();
+        if (processorNames == null) {
+            return null;             // no processors specified, keep migrate without them
+        }
+
         CompositeItemProcessor<List<SolrInputDocument>, List<SolrInputDocument>> compositeProcessor =
                 new CompositeItemProcessor<>();
         try {
             File[] files = getFilesInPackage(packageName);
-            List<String> processorNames = toolConfiguration.getProcessorClassNames();
             List<String> chosenProcessorNames = filterFilesByProcessorClassNames(files, processorNames);
             List<SolrDocProcessorInterface> processors = instantiateProcessors(packageName, chosenProcessorNames);
             compositeProcessor.setDelegates(processors);
