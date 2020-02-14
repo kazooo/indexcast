@@ -38,6 +38,7 @@ public class SolrClientWrapper {
             response = client.query(coreName, query);
             return new Pair<>(response.getNextCursorMark(), response.getResults());
         } catch (SolrServerException | IOException e) {
+            logger.error("Can't request source Solr index for a cursor!");
             e.printStackTrace();
         }
         return null;
@@ -49,6 +50,7 @@ public class SolrClientWrapper {
             response = client.query(coreName, query);
             return response.getNextCursorMark();
         } catch (SolrServerException | IOException e) {
+            logger.error("Can't request source Solr index for a cursor!");
             e.printStackTrace();
         }
         return null;

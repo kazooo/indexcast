@@ -55,7 +55,7 @@ public class CursorMarkGlobalStorage {
         try {
             Thread.sleep(3000); // sleep 3 sec
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            logger.warn("Waiting for a cursor mark failed...");
         }
     }
 }
