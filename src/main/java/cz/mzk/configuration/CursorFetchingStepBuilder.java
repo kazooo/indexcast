@@ -33,7 +33,7 @@ public class CursorFetchingStepBuilder {
     SrcSolrClient solrClient;
 
     public Step build(String name) {
-        // until reader can fetch cursors and doesnt return null, jobs will run in infinite loop
+        // until reader can fetch cursors and doesnt return null, job can run in infinite loop
         return stepBuilderFactory.get(name)
                 .<Pair<String, Integer>, Pair<String, Integer>>chunk(1)  // read only 1 cursor then go to writing step
                 .reader(fetchReader())

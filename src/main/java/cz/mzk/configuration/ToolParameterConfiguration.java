@@ -48,7 +48,8 @@ public class ToolParameterConfiguration {
     public void init() throws IOException {
         File file = new File(pathToSchema);
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-        this.migrationYAMLSchema = mapper.readValue(file, MigrationYAMLSchema.class);
+        migrationYAMLSchema = mapper.readValue(file, MigrationYAMLSchema.class);
+        migrationYAMLSchema.setUpRequestFields();
 
         logger.info("                Query: " + query);
         logger.info("              Threads: " + threads);
@@ -59,7 +60,7 @@ public class ToolParameterConfiguration {
     }
 
     public List<String> getProcessorClassNames() {
-        return migrationYAMLSchema.processors;
+        return migrationYAMLSchema.getProcessors();
     }
 
     public int getThreads() {
@@ -91,6 +92,6 @@ public class ToolParameterConfiguration {
     }
 
     public String getUniqKey() {
-        return migrationYAMLSchema.uniqueKey;
+        return migrationYAMLSchema.getUniqueKey();
     }
 }

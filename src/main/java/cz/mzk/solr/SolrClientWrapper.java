@@ -56,7 +56,7 @@ public class SolrClientWrapper {
 
     public void index(SolrInputDocument doc) {
         try {
-            client.add(doc);
+            client.add(coreName, doc);
         } catch (SolrServerException | IOException e) {
             logger.error("Can't index document!");
         }
@@ -64,7 +64,7 @@ public class SolrClientWrapper {
 
     public void commit() {
         try {
-            client.commit();
+            client.commit(coreName);
         } catch (SolrServerException | IOException e) {
             logger.error("Can't commit changes!");
         }

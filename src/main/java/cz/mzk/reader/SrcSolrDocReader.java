@@ -75,10 +75,11 @@ public class SrcSolrDocReader implements ItemReader<List<SolrInputDocument>> {
     private SolrQuery generateQueryFromCursor(String cursor) {
         SolrQuery parameters = new SolrQuery();
         parameters.setQuery(queryStr);
+        parameters.setRows(docsPerRequest);
         parameters.setRequestHandler("select");
         parameters.setSort(SolrQuery.SortClause.asc(uniqKey));
-        parameters.setRows(docsPerRequest);
         parameters.set(CursorMarkParams.CURSOR_MARK_PARAM, cursor);
+        schema.getRequestFields().forEach(parameters::addField);
         return parameters;
     }
 

@@ -17,7 +17,7 @@ public class TestProcessor implements SolrDocProcessorInterface {
 
     @Override
     public List<SolrInputDocument> process(List<SolrInputDocument> item) {
-        logger.info("I'm test processor doing nothing and successfully!");
+        logger.debug("I'm test processor doing nothing and successfully!");
         return item;
     }
 }
