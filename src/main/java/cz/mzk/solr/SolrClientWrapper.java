@@ -44,11 +44,11 @@ public class SolrClientWrapper {
         return null;
     }
 
-    public String queryCursor(SolrQuery query) {
+    public Pair<String, Long> queryCursorAndNumFound(SolrQuery query) {
         final QueryResponse response;
         try {
             response = client.query(coreName, query);
-            return response.getNextCursorMark();
+            return new Pair<>(response.getNextCursorMark(), response.getResults().getNumFound());
         } catch (SolrServerException | IOException e) {
             logger.error("Can't request source Solr index for a cursor!");
             e.printStackTrace();

@@ -36,14 +36,15 @@ public class SrcSolrCursorReader implements ItemReader<Pair<String, Integer>> {
     @Override
     public Pair<String, Integer> read() {
         SolrQuery query = generateQueryFromCursor(lastCursorMark);
-        String nextCursorMark = solrClient.queryCursor(query);
+        Pair<String, Long> cursorAndNumFound = solrClient.queryCursorAndNumFound(query);
+        String nextCursorMark = cursorAndNumFound.getKey();
 
         if (nextCursorMark.equals(lastCursorMark)) { // no more cursors, end of index
             cursorStorage.close();
             return null;
         } else {
             logger.debug("[read] " + lastCursorMark);
-            Pair<String, Integer> pair = new Pair<>(lastCursorMark, query.getRows());
+            Pair<String, Integer> pair = new Pair<>(lastCursorMark, (int) (long) cursorAndNumFound.getValue());
             lastCursorMark = nextCursorMark;
             return pair;
         }
