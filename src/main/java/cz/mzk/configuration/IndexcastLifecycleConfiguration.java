@@ -20,7 +20,7 @@ import org.springframework.core.task.SimpleAsyncTaskExecutor;
 
 @Configuration
 @EnableBatchProcessing
-public class ToolLifecycleConfiguration {
+public class IndexcastLifecycleConfiguration {
 
     @Autowired
     JobBuilderFactory jobBuilderFactory;
@@ -32,9 +32,9 @@ public class ToolLifecycleConfiguration {
     MigrationStepBuilder migrationStepBuilder;
 
     @Autowired
-    ToolParameterConfiguration toolConfiguration;
+    IndexcastParameterConfiguration toolConfiguration;
 
-    private final Logger logger = LoggerFactory.getLogger(ToolLifecycleConfiguration.class);
+    private final Logger logger = LoggerFactory.getLogger(IndexcastLifecycleConfiguration.class);
 
     @Bean
     public Job parallelStepsJob() {

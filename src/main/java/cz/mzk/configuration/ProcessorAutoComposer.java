@@ -25,7 +25,7 @@ import java.util.List;
 public class ProcessorAutoComposer {
 
     @Autowired
-    private ToolParameterConfiguration toolConfiguration;
+    private IndexcastParameterConfiguration toolConfiguration;
 
     private final String packageName = "cz.mzk.processor";
     private final Logger logger = LoggerFactory.getLogger(ProcessorAutoComposer.class);

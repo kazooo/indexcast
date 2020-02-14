@@ -19,7 +19,7 @@ import java.util.List;
  */
 
 @Configuration
-public class ToolParameterConfiguration {
+public class IndexcastParameterConfiguration {
 
     @Value("${THREADS:4}")
     private int threads;
@@ -42,7 +42,7 @@ public class ToolParameterConfiguration {
     private String coreName = "solr/kramerius";
     private MigrationYAMLSchema migrationYAMLSchema;
 
-    private final Logger logger = LoggerFactory.getLogger(ToolLifecycleConfiguration.class);
+    private final Logger logger = LoggerFactory.getLogger(IndexcastParameterConfiguration.class);
 
     @PostConstruct
     public void init() throws IOException {

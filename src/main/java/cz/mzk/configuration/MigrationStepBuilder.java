@@ -30,7 +30,7 @@ public class MigrationStepBuilder {
     ProcessorAutoComposer processorComposer;
 
     @Autowired
-    ToolParameterConfiguration toolParameterConfiguration;
+    IndexcastParameterConfiguration toolParameterConfiguration;
 
     @Autowired
     CursorMarkGlobalStorage cursorMarkGlobalStorage;

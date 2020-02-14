@@ -1,6 +1,6 @@
 package cz.mzk.reader;
 
-import cz.mzk.configuration.ToolParameterConfiguration;
+import cz.mzk.configuration.IndexcastParameterConfiguration;
 import cz.mzk.model.CursorMarkGlobalStorage;
 import cz.mzk.model.MigrationYAMLSchema;
 import cz.mzk.solr.SrcSolrClient;
@@ -38,7 +38,7 @@ public class SrcSolrDocReader implements ItemReader<List<SolrInputDocument>> {
 
     private final Logger logger = LoggerFactory.getLogger(SrcSolrDocReader.class);
 
-    public SrcSolrDocReader(ToolParameterConfiguration config,
+    public SrcSolrDocReader(IndexcastParameterConfiguration config,
                             CursorMarkGlobalStorage storage,
                             SrcSolrClient client) {
         lastCursorMark = null;

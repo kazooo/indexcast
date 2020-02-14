@@ -1,6 +1,6 @@
 package cz.mzk.reader;
 
-import cz.mzk.configuration.ToolParameterConfiguration;
+import cz.mzk.configuration.IndexcastParameterConfiguration;
 import cz.mzk.model.CursorMarkGlobalStorage;
 import cz.mzk.solr.SrcSolrClient;
 import javafx.util.Pair;
@@ -17,14 +17,14 @@ import org.springframework.batch.item.ItemReader;
 
 public class SrcSolrCursorReader implements ItemReader<Pair<String, Integer>> {
 
-    ToolParameterConfiguration toolConfiguration;
+    IndexcastParameterConfiguration toolConfiguration;
     CursorMarkGlobalStorage cursorStorage;
     SrcSolrClient solrClient;
 
     private String lastCursorMark;
     private final Logger logger = LoggerFactory.getLogger(SrcSolrCursorReader.class);
 
-    public SrcSolrCursorReader(ToolParameterConfiguration config,
+    public SrcSolrCursorReader(IndexcastParameterConfiguration config,
                                CursorMarkGlobalStorage storage,
                                SrcSolrClient client) {
         lastCursorMark = CursorMarkParams.CURSOR_MARK_START;

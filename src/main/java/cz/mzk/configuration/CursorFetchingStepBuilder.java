@@ -24,7 +24,7 @@ public class CursorFetchingStepBuilder {
     StepBuilderFactory stepBuilderFactory;
 
     @Autowired
-    ToolParameterConfiguration toolParameterConfiguration;
+    IndexcastParameterConfiguration toolParameterConfiguration;
 
     @Autowired
     CursorMarkGlobalStorage cursorMarkGlobalStorage;

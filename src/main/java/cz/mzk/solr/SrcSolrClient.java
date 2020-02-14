@@ -13,8 +13,8 @@ import org.springframework.stereotype.Component;
 public class SrcSolrClient extends SolrClientWrapper {
 
     @Autowired
-    public SrcSolrClient(@Value("#{toolParameterConfiguration.srcSolrHost}") String srcSolrHost,
-                         @Value("#{toolParameterConfiguration.coreName}") String coreName) {
+    public SrcSolrClient(@Value("#{indexcastParameterConfiguration.srcSolrHost}") String srcSolrHost,
+                         @Value("#{indexcastParameterConfiguration.coreName}") String coreName) {
         super(srcSolrHost, coreName);
     }
 }
