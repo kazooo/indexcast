@@ -2,8 +2,8 @@ package cz.mzk.reader;
 
 import cz.mzk.configuration.IndexcastParameterConfiguration;
 import cz.mzk.model.CursorMarkGlobalStorage;
+import cz.mzk.model.Pair;
 import cz.mzk.solr.SrcSolrClient;
-import javafx.util.Pair;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.common.params.CursorMarkParams;
 import org.slf4j.Logger;
@@ -58,7 +58,7 @@ public class SrcSolrCursorReader implements ItemReader<Pair<String, Integer>> {
         parameters.setQuery(queryStr);
         parameters.setRequestHandler("select");
         parameters.setSort(SolrQuery.SortClause.asc(uniqKey));
-        parameters.setFields(uniqKey); // at this moment we dont want all data in document
+        parameters.setFields(uniqKey); // at this moment we dont want all data in documents
         parameters.setRows(maxObjectPerCursor);
         parameters.set(CursorMarkParams.CURSOR_MARK_PARAM, cursor);
         return parameters;

@@ -10,9 +10,9 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
  */
 
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
-public class Solr2SolrApplication {
+public class IndexcastApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(Solr2SolrApplication.class, args);
+        SpringApplication.run(IndexcastApplication.class, args);
     }
 }

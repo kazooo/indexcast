@@ -4,7 +4,7 @@ import cz.mzk.configuration.IndexcastParameterConfiguration;
 import cz.mzk.model.CursorMarkGlobalStorage;
 import cz.mzk.model.MigrationYAMLSchema;
 import cz.mzk.solr.SrcSolrClient;
-import javafx.util.Pair;
+import cz.mzk.model.Pair;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;

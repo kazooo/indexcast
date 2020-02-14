@@ -1,6 +1,6 @@
 package cz.mzk.solr;
 
-import javafx.util.Pair;
+import cz.mzk.model.Pair;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -61,6 +61,7 @@ public class SolrClientWrapper {
             client.add(coreName, doc);
         } catch (SolrServerException | IOException e) {
             logger.error("Can't index document!");
+            e.printStackTrace();
         }
     }
 
@@ -69,6 +70,7 @@ public class SolrClientWrapper {
             client.commit(coreName);
         } catch (SolrServerException | IOException e) {
             logger.error("Can't commit changes!");
+            e.printStackTrace();
         }
     }
 }

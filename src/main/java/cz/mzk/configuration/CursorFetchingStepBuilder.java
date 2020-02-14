@@ -4,7 +4,7 @@ import cz.mzk.model.CursorMarkGlobalStorage;
 import cz.mzk.reader.SrcSolrCursorReader;
 import cz.mzk.solr.SrcSolrClient;
 import cz.mzk.writer.CursorStorageWriter;
-import javafx.util.Pair;
+import cz.mzk.model.Pair;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.item.ItemReader;

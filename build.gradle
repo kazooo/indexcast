@@ -4,9 +4,11 @@ buildscript {
     }
     repositories {
         mavenCentral()
+        gradlePluginPortal()
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath "com.palantir.gradle.docker:gradle-docker:0.25.0"
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
     }
 }
 
@@ -15,11 +17,13 @@ apply plugin: 'idea'
 apply plugin: 'application'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
+apply plugin: 'com.palantir.docker'
 
 group = 'cz.mzk'
 version = '1.0.0'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+mainClassName = 'cz.mzk.IndexcastApplication'
 
 repositories {
     mavenCentral()
@@ -34,4 +38,17 @@ dependencies {
 wrapper {
     gradleVersion = '6.1.1'
     distributionType = Wrapper.DistributionType.BIN
+}
+
+task unpack(type: Copy) {
+    dependsOn bootJar
+    from(zipTree(tasks.bootJar.outputs.files.singleFile))
+    into("build/dependency")
+}
+
+docker {
+    name = "ermak/indexcast:" + version
+    copySpec.from(tasks.unpack.outputs).into("docker/dependency")
+    setDockerfile(file("docker/Dockerfile"))
+    pull(false)
 }
