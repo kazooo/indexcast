@@ -18,7 +18,7 @@ public class CursorMarkGlobalStorage {
     private final List<Pair<String, Integer>> cursorMarksWithObjectsCount;
     private final Logger logger = LoggerFactory.getLogger(CursorMarkGlobalStorage.class);
 
-    CursorMarkGlobalStorage() {
+    public CursorMarkGlobalStorage() {
         noMoreCursors = false;
         cursorMarksWithObjectsCount = Collections.synchronizedList(new ArrayList<>());
     }
