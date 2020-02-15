@@ -3,7 +3,15 @@ package cz.mzk.model;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+
+
+/**
+ * @author Aleksei Ermak
+ */
 
 public class PairTest {
 
@@ -22,6 +30,14 @@ public class PairTest {
 
     @Test
     public void testEqual() {
+        assertEquals(pair, pair);
         assertEquals(pair, new Pair<>("cursor", 10));
+    }
+
+    @Test
+    public void testNotEqual() {
+        assertNotEquals(pair, new Pair<>("cursor", 0));
+        assertNotEquals(pair, new Pair<>("*", 10));
+        assertNotEquals(pair, new ArrayList<>());
     }
 }
