@@ -47,6 +47,7 @@ public class CursorMarkGlobalStorage {
     }
 
     public boolean isClosed() {
+        logger.debug("[storage is closed] " + noMoreCursors);
         return noMoreCursors;
     }
 
