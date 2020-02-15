@@ -3,9 +3,9 @@ language: java
 jdk: oraclejdk8
 
 env:
-  - GRADLE_VERSION=5.6.2
   global:
     - CODECOV_TOKEN="4942167e-3c2f-4311-8e85-ff89ae30f509"
+    - GRADLE_VERSION=5.6.2
 
 before_install:
   - wget https://services.gradle.org/distributions/gradle-$GRADLE_VERSION-bin.zip
