@@ -14,9 +14,12 @@ before_install:
   - export PATH=$GRADLE_HOME/bin:$PATH
   - gradle -v
 
-script: gradle wrapper && ./gradlew clean build
+script:
+  - gradle wrapper
+  - ./gradlew clean build
 
 after_success:
+  - ./gradlew jacocoTestReport
   - bash <(curl -s https://codecov.io/bash)
 
 notifications:
