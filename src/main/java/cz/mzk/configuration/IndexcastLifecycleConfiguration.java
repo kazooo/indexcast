@@ -22,19 +22,22 @@ import org.springframework.core.task.SimpleAsyncTaskExecutor;
 @EnableBatchProcessing
 public class IndexcastLifecycleConfiguration {
 
-    @Autowired
-    JobBuilderFactory jobBuilderFactory;
-
-    @Autowired
-    CursorFetchingStepBuilder cursorFetchStepBuilder;
-
-    @Autowired
-    MigrationStepBuilder migrationStepBuilder;
-
-    @Autowired
-    IndexcastParameterConfiguration toolConfiguration;
+    private final JobBuilderFactory jobBuilderFactory;
+    private final CursorFetchingStepBuilder cursorFetchStepBuilder;
+    private final MigrationStepBuilder migrationStepBuilder;
+    private final IndexcastParameterConfiguration toolConfiguration;
 
     private final Logger logger = LoggerFactory.getLogger(IndexcastLifecycleConfiguration.class);
+
+    public IndexcastLifecycleConfiguration(JobBuilderFactory jobBuilderFactory,
+                                           CursorFetchingStepBuilder cursorFetchStepBuilder,
+                                           MigrationStepBuilder migrationStepBuilder,
+                                           IndexcastParameterConfiguration toolConfiguration) {
+        this.jobBuilderFactory = jobBuilderFactory;
+        this.cursorFetchStepBuilder = cursorFetchStepBuilder;
+        this.migrationStepBuilder = migrationStepBuilder;
+        this.toolConfiguration = toolConfiguration;
+    }
 
     @Bean
     public Job parallelStepsJob() {

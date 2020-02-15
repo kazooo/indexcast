@@ -20,17 +20,20 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class CursorFetchingStepBuilder {
 
-    @Autowired
-    StepBuilderFactory stepBuilderFactory;
+    private final StepBuilderFactory stepBuilderFactory;
+    private final IndexcastParameterConfiguration toolParameterConfiguration;
+    private final CursorMarkGlobalStorage cursorMarkGlobalStorage;
+    private final SrcSolrClient solrClient;
 
-    @Autowired
-    IndexcastParameterConfiguration toolParameterConfiguration;
-
-    @Autowired
-    CursorMarkGlobalStorage cursorMarkGlobalStorage;
-
-    @Autowired
-    SrcSolrClient solrClient;
+    public CursorFetchingStepBuilder(IndexcastParameterConfiguration toolParameterConfiguration,
+                                     CursorMarkGlobalStorage cursorMarkGlobalStorage,
+                                     StepBuilderFactory stepBuilderFactory,
+                                     SrcSolrClient solrClient) {
+        this.stepBuilderFactory = stepBuilderFactory;
+        this.toolParameterConfiguration = toolParameterConfiguration;
+        this.cursorMarkGlobalStorage = cursorMarkGlobalStorage;
+        this.solrClient = solrClient;
+    }
 
     public Step build(String name) {
         // until reader can fetch cursors and doesnt return null, job can run in infinite loop

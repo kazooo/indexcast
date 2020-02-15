@@ -24,11 +24,13 @@ import java.util.List;
 @Component
 public class ProcessorAutoComposer {
 
-    @Autowired
-    private IndexcastParameterConfiguration toolConfiguration;
-
+    private final IndexcastParameterConfiguration toolConfiguration;
     private final String packageName = "cz.mzk.processor";
     private final Logger logger = LoggerFactory.getLogger(ProcessorAutoComposer.class);
+
+    public ProcessorAutoComposer(IndexcastParameterConfiguration toolConfiguration) {
+        this.toolConfiguration = toolConfiguration;
+    }
 
     public CompositeItemProcessor<List<SolrInputDocument>, List<SolrInputDocument>> composite() {
         List<String> processorNames = toolConfiguration.getProcessorClassNames();

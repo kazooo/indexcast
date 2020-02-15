@@ -23,23 +23,25 @@ import java.util.List;
 @Configuration
 public class MigrationStepBuilder {
 
-    @Autowired
-    StepBuilderFactory stepBuilderFactory;
+    private final StepBuilderFactory stepBuilderFactory;
+    private final ProcessorAutoComposer processorComposer;
+    private final IndexcastParameterConfiguration toolParameterConfiguration;
+    private final CursorMarkGlobalStorage cursorMarkGlobalStorage;
+    private final SrcSolrClient srcSolrClient;
+    private final DstSolrClient dstSolrClient;
 
-    @Autowired
-    ProcessorAutoComposer processorComposer;
-
-    @Autowired
-    IndexcastParameterConfiguration toolParameterConfiguration;
-
-    @Autowired
-    CursorMarkGlobalStorage cursorMarkGlobalStorage;
-
-    @Autowired
-    SrcSolrClient srcSolrClient;
-
-    @Autowired
-    DstSolrClient dstSolrClient;
+    public MigrationStepBuilder(StepBuilderFactory stepBuilderFactory,
+                                ProcessorAutoComposer processorComposer,
+                                IndexcastParameterConfiguration toolParameterConfiguration,
+                                CursorMarkGlobalStorage cursorMarkGlobalStorage,
+                                SrcSolrClient srcSolrClient, DstSolrClient dstSolrClient) {
+        this.stepBuilderFactory = stepBuilderFactory;
+        this.processorComposer = processorComposer;
+        this.toolParameterConfiguration = toolParameterConfiguration;
+        this.cursorMarkGlobalStorage = cursorMarkGlobalStorage;
+        this.srcSolrClient = srcSolrClient;
+        this.dstSolrClient = dstSolrClient;
+    }
 
     public Step build(String name) {
         // until reader can get cursors and doesnt return null, jobs will run in infinite loop
