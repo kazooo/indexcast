@@ -1,6 +1,6 @@
 package cz.mzk.configuration;
 
-import cz.mzk.processor.SolrDocProcessorInterface;
+import cz.mzk.processor.ProcessorInterface;
 import org.apache.solr.common.SolrInputDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +42,7 @@ public class ProcessorAutoComposer {
         try {
             File[] files = getFilesInPackage(packageName);
             List<String> chosenProcessorNames = filterFilesByProcessorClassNames(files, processorNames);
-            List<SolrDocProcessorInterface> processors = instantiateProcessors(packageName, chosenProcessorNames);
+            List<ProcessorInterface> processors = instantiateProcessors(packageName, chosenProcessorNames);
             compositeProcessor.setDelegates(processors);
         } catch (IOException | ClassNotFoundException | InstantiationException |
                 InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
@@ -76,14 +76,14 @@ public class ProcessorAutoComposer {
         return acceptedClassNames;
     }
 
-    private List<SolrDocProcessorInterface> instantiateProcessors(String packageName, List<String> classNames)
+    private List<ProcessorInterface> instantiateProcessors(String packageName, List<String> classNames)
             throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException,
             InvocationTargetException, InstantiationException {
-        List<SolrDocProcessorInterface> instances = new ArrayList<>();
+        List<ProcessorInterface> instances = new ArrayList<>();
         for (String className : classNames) {
             Class<?> processorClass = Class.forName(packageName + '.' + className);
             Object processor = processorClass.getConstructor().newInstance();
-            instances.add((SolrDocProcessorInterface)processor);
+            instances.add((ProcessorInterface)processor);
         }
         return instances;
     }

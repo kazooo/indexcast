@@ -11,7 +11,7 @@ import java.util.List;
  * @author Aleksei Ermak
  */
 
-public class TestProcessor implements SolrDocProcessorInterface {
+public class TestProcessor implements ProcessorInterface {
 
     private final Logger logger = LoggerFactory.getLogger(TestProcessor.class);
 

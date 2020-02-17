@@ -7,9 +7,11 @@ import java.util.List;
 
 
 /**
+ * Simplified interface for ItemProcessor<List<SolrInputDocument>, List<SolrInputDocument>> type.
+ *
  * @author Aleksei Ermak
  */
 
-public interface SolrDocProcessorInterface extends ItemProcessor<List<SolrInputDocument>, List<SolrInputDocument>> {
+public interface ProcessorInterface extends ItemProcessor<List<SolrInputDocument>, List<SolrInputDocument>> {
     List<SolrInputDocument> process(List<SolrInputDocument> item);
 }
