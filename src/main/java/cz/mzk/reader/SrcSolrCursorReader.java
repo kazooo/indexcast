@@ -12,6 +12,9 @@ import org.springframework.batch.item.ItemReader;
 
 
 /**
+ * This reader fetch cursors from source Solr instance.
+ * With cursor it requests for numFound number representing how many objects can read from previous cursor.
+ *
  * @author Aleksei Ermak
  */
 
@@ -24,6 +27,13 @@ public class SrcSolrCursorReader implements ItemReader<Pair<String, Integer>> {
     private String lastCursorMark;
     private final Logger logger = LoggerFactory.getLogger(SrcSolrCursorReader.class);
 
+    /**
+     * Cursor reader constructor. Set initial cursor value at "*" as start cursor mark.
+     *
+     * @param config   Indexcast configuration
+     * @param storage  cursor mark storage
+     * @param client   source Solr instance client
+     */
     public SrcSolrCursorReader(IndexcastParameterConfiguration config,
                                CursorMarkGlobalStorage storage,
                                SrcSolrClient client) {
@@ -33,6 +43,13 @@ public class SrcSolrCursorReader implements ItemReader<Pair<String, Integer>> {
         solrClient = client;
     }
 
+    /**
+     * Function requests cursors and numFound numbers from source Solr instance.
+     * If the last fetched cursor is the same as previous cursor mark, close cursor storage and return null.
+     * Otherwise return previous cursor mark and how many documents can be fetched from this cursor.
+     *
+     * @return null or pair structure with cursor and numFound number
+     */
     @Override
     public Pair<String, Integer> read() {
         SolrQuery query = generateQueryFromCursor(lastCursorMark);
@@ -50,6 +67,13 @@ public class SrcSolrCursorReader implements ItemReader<Pair<String, Integer>> {
         }
     }
 
+    /**
+     * Creates query structure for cursor requesting. Uses Indexcast configuration to set up sorting by Solr uniqueKey,
+     * query specified by user and how many documents can be processed in one part.
+     *
+     * @param cursor  cursor from which can be requested source Solr instance for next cursor
+     * @return        composed Solr query structure
+     */
     private SolrQuery generateQueryFromCursor(String cursor) {
         String uniqKey = toolConfiguration.getUniqKey();
         String queryStr = toolConfiguration.getQuery();

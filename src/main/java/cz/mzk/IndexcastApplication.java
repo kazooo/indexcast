@@ -6,6 +6,9 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 
 
 /**
+ * Indexcast application start point.
+ * jdbc.DataSourceAutoConfiguration is used to run Spring Batch application without database usage.
+ *
  * @author Aleksei Ermak
  */
 

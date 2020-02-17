@@ -10,6 +10,9 @@ import java.util.List;
 
 
 /**
+ * This writer sends processed Solr input documents to destination Solr instance.
+ * At the end commits changes.
+ *
  * @author Aleksei Ermak
  */
 
