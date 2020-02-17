@@ -1,18 +1,15 @@
 package cz.mzk.model;
 
-
 import org.junit.Before;
-import org.junit.FixMethodOrder;
 import org.junit.Test;
-import org.junit.runners.MethodSorters;
 
 import static org.junit.Assert.*;
+
 
 /**
  * @author Aleksei Ermak
  */
 
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class CursorMarkGlobalStorageTest {
 
     private CursorMarkGlobalStorage storage;
