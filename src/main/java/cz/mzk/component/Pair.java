@@ -1,5 +1,7 @@
 package cz.mzk.component;
 
+import java.util.Objects;
+
 public class Pair<K,V> {
 
     private K key;
@@ -20,8 +22,8 @@ public class Pair<K,V> {
         if (this == o) return true;
         if (o instanceof Pair) {
             Pair<K, V> pair = (Pair) o;
-            if (key != null ? !key.equals(pair.key) : pair.key != null) return false;
-            if (value != null ? !value.equals(pair.value) : pair.value != null) return false;
+            if (!Objects.equals(key, pair.key)) return false;
+            if (!Objects.equals(value, pair.value)) return false;
             return true;
         }
         return false;
