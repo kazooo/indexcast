@@ -39,7 +39,9 @@ public class IndexcastParameterConfiguration {
     @Value("${SCHEMA_PATH}")
     private String pathToSchema;
 
-    private String coreName = "solr/kramerius";
+    @Value("${CORE_NAME}")
+    private String coreName;
+
     private MigrationYAMLSchema migrationYAMLSchema;
 
     private final Logger logger = LoggerFactory.getLogger(IndexcastParameterConfiguration.class);
@@ -52,6 +54,7 @@ public class IndexcastParameterConfiguration {
         migrationYAMLSchema.setUpRequestFields();
 
         logger.info("                Query: " + query);
+        logger.info("            Core name: " + coreName);
         logger.info("              Threads: " + threads);
         logger.info("  Documents per cycle: " + docsPerCycle);
         logger.info("       Path to schema: " + pathToSchema);
