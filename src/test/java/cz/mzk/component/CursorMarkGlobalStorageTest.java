@@ -1,4 +1,4 @@
-package cz.mzk.model;
+package cz.mzk.component;
 
 import org.junit.Before;
 import org.junit.Test;

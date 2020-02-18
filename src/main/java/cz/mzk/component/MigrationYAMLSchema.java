@@ -1,4 +1,4 @@
-package cz.mzk.model;
+package cz.mzk.component;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.solr.common.SolrDocument;

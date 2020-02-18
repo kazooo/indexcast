@@ -1,6 +1,6 @@
 package cz.mzk.configuration;
 
-import cz.mzk.model.CursorMarkGlobalStorage;
+import cz.mzk.component.CursorMarkGlobalStorage;
 import cz.mzk.reader.SrcSolrDocReader;
 import cz.mzk.solr.DstSolrClient;
 import cz.mzk.solr.SrcSolrClient;

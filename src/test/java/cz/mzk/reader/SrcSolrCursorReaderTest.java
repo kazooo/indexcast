@@ -1,8 +1,8 @@
 package cz.mzk.reader;
 
 import cz.mzk.configuration.IndexcastParameterConfiguration;
-import cz.mzk.model.CursorMarkGlobalStorage;
-import cz.mzk.model.Pair;
+import cz.mzk.component.CursorMarkGlobalStorage;
+import cz.mzk.component.Pair;
 import cz.mzk.solr.SrcSolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.junit.Before;

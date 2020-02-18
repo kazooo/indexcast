@@ -1,4 +1,4 @@
-package cz.mzk.model;
+package cz.mzk.component;
 
 public class Pair<K,V> {
 

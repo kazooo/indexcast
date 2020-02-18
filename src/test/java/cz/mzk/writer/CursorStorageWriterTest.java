@@ -1,7 +1,7 @@
 package cz.mzk.writer;
 
-import cz.mzk.model.CursorMarkGlobalStorage;
-import cz.mzk.model.Pair;
+import cz.mzk.component.CursorMarkGlobalStorage;
+import cz.mzk.component.Pair;
 import org.junit.Test;
 
 import java.util.Arrays;

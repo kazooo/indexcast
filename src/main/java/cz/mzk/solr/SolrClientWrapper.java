@@ -1,6 +1,6 @@
 package cz.mzk.solr;
 
-import cz.mzk.model.Pair;
+import cz.mzk.component.Pair;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;

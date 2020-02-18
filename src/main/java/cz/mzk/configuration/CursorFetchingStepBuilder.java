@@ -1,10 +1,10 @@
 package cz.mzk.configuration;
 
-import cz.mzk.model.CursorMarkGlobalStorage;
+import cz.mzk.component.CursorMarkGlobalStorage;
 import cz.mzk.reader.SrcSolrCursorReader;
 import cz.mzk.solr.SrcSolrClient;
 import cz.mzk.writer.CursorStorageWriter;
-import cz.mzk.model.Pair;
+import cz.mzk.component.Pair;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.item.ItemReader;

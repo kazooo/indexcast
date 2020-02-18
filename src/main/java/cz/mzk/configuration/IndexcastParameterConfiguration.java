@@ -2,7 +2,7 @@ package cz.mzk.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import cz.mzk.model.MigrationYAMLSchema;
+import cz.mzk.component.MigrationYAMLSchema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
