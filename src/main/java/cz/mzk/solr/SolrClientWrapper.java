@@ -32,6 +32,10 @@ public class SolrClientWrapper {
                 .build();
     }
 
+    public void setupCustomSolrClient(SolrClient client) {
+        this.client = client;
+    }
+
     public Pair<String, SolrDocumentList> queryWithCursor(SolrQuery query) {
         final QueryResponse response;
         try {
