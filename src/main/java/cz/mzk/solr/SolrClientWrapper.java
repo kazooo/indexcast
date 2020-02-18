@@ -56,12 +56,14 @@ public class SolrClientWrapper {
         return null;
     }
 
-    public void index(SolrInputDocument doc) {
+    public boolean index(SolrInputDocument doc) {
         try {
             client.add(coreName, doc);
+            return true;
         } catch (SolrServerException | IOException e) {
             logger.error("Can't index document!");
             e.printStackTrace();
+            return false;
         }
     }
 

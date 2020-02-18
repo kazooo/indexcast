@@ -31,10 +31,12 @@ public class CursorMarkGlobalStorageTest {
 
     @Test
     public void testWaitingForCursor() throws InterruptedException {
-        Thread thread = new Thread(() -> storage.getNextCursorAndObjNum());
-        thread.start();
-        Thread.sleep(5000);
-        assertTrue(thread.isAlive());
+        Thread t = new Thread(() -> storage.getNextCursorAndObjNum());
+        t.start();
+        Thread.sleep(4000);
+        assertTrue(t.isAlive());
+        Thread.sleep(1000);
+        t.interrupt();
     }
 
     @Test

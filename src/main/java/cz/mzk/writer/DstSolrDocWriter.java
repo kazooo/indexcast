@@ -29,10 +29,20 @@ public class DstSolrDocWriter implements ItemWriter<List<SolrInputDocument>> {
     public void write(List<? extends List<SolrInputDocument>> items) {
         for (List<SolrInputDocument> docs : items) {
             for (SolrInputDocument doc : docs) {
-                solrClient.index(doc);
+                while(!solrClient.index(doc)) {
+                    waitForConnection();
+                }
             }
             logger.debug("[send] " + docs.size() + " docs");
         }
         solrClient.commit();
+    }
+
+    private void waitForConnection() {
+        try {
+            Thread.sleep(60000); // one minute
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
