@@ -36,12 +36,11 @@ public class MigrationYAMLSchema {
     }
 
     public SolrInputDocument convert(SolrDocument doc) {
-        SolrInputDocument inputDoc = new SolrInputDocument();
         Collection<String> srcDocFieldNames = doc.getFieldNames();
-
         checkDocContainsSpecifiedFields(srcDocFieldNames);
         checkDocHasOnlySpecifiedFields(srcDocFieldNames);
 
+        SolrInputDocument inputDoc = new SolrInputDocument();
         for (String fieldName : srcDocFieldNames) {
             String newFieldName = fields.get(fieldName);
             inputDoc.addField(newFieldName, doc.getFieldValue(fieldName));
@@ -67,7 +66,7 @@ public class MigrationYAMLSchema {
         }
     }
 
-    public List<String> getProcessors() {
+    public List<String> getProcessorNames() {
         return processors;
     }
 

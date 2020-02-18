@@ -1,10 +1,10 @@
 package cz.mzk.reader;
 
 import cz.mzk.configuration.IndexcastParameterConfiguration;
-import cz.mzk.model.CursorMarkGlobalStorage;
-import cz.mzk.model.MigrationYAMLSchema;
+import cz.mzk.component.CursorMarkGlobalStorage;
+import cz.mzk.component.MigrationYAMLSchema;
 import cz.mzk.solr.SrcSolrClient;
-import cz.mzk.model.Pair;
+import cz.mzk.component.Pair;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
@@ -19,6 +19,11 @@ import java.util.List;
 
 
 /**
+ * This reader requests source Solr instance for batches of documents.
+ * If reader starts fetching new part it read cursor mark and numFound number representing how many documents
+ * can be read from source Solr instance from storage. Then it requests Solr instance for documents
+ * in several cycles  until they count reach numFound number.
+ *
  * @author Aleksei Ermak
  */
 
@@ -38,6 +43,13 @@ public class SrcSolrDocReader implements ItemReader<List<SolrInputDocument>> {
 
     private final Logger logger = LoggerFactory.getLogger(SrcSolrDocReader.class);
 
+    /**
+     * Cursor reader constructor. Set initial cursor value at null to start fetching new part.
+     *
+     * @param config   Indexcast configuration
+     * @param storage  cursor mark storage
+     * @param client   source Solr instance client
+     */
     public SrcSolrDocReader(IndexcastParameterConfiguration config,
                             CursorMarkGlobalStorage storage,
                             SrcSolrClient client) {

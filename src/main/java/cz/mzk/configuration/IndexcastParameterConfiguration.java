@@ -45,7 +45,7 @@ public class IndexcastParameterConfiguration {
     private final Logger logger = LoggerFactory.getLogger(IndexcastParameterConfiguration.class);
 
     @PostConstruct
-    public void init() throws IOException {
+    public void postInit() throws IOException {
         File file = new File(pathToSchema);
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         migrationYAMLSchema = mapper.readValue(file, MigrationYAMLSchema.class);
@@ -60,7 +60,7 @@ public class IndexcastParameterConfiguration {
     }
 
     public List<String> getProcessorClassNames() {
-        return migrationYAMLSchema.getProcessors();
+        return migrationYAMLSchema.getProcessorNames();
     }
 
     public int getThreads() {
