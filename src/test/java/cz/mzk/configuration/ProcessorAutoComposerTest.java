@@ -43,6 +43,12 @@ public class ProcessorAutoComposerTest {
         assertNull(composer.composite());
     }
 
+    @Test
+    public void testLoadNonProcessorClass() {
+        when(configuration.getProcessorClassNames()).thenReturn(Collections.singletonList("NotAProcessor"));
+        assertNull(composer.composite());
+    }
+
     public boolean processorHasBeenLoaded(String name) throws Exception {
         java.lang.reflect.Method m = ClassLoader.class
                 .getDeclaredMethod("findLoadedClass", String.class);

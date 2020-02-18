@@ -44,7 +44,7 @@ public class ProcessorAutoComposer {
             List<String> chosenProcessorNames = filterFilesByProcessorClassNames(files, processorNames);
             List<ProcessorInterface> processors = instantiateProcessors(packageName, chosenProcessorNames);
             compositeProcessor.setDelegates(processors);
-        } catch (IOException | ClassNotFoundException | InstantiationException |
+        } catch (IOException | ClassNotFoundException | InstantiationException | ClassCastException |
                 InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
             logger.error("Can't initialize custom processors!");
             e.printStackTrace();
@@ -78,7 +78,7 @@ public class ProcessorAutoComposer {
 
     private List<ProcessorInterface> instantiateProcessors(String packageName, List<String> classNames)
             throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException,
-            InvocationTargetException, InstantiationException {
+            InvocationTargetException, InstantiationException, ClassCastException {
         List<ProcessorInterface> instances = new ArrayList<>();
         for (String className : classNames) {
             Class<?> processorClass = Class.forName(packageName + '.' + className);
