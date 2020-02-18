@@ -29,8 +29,8 @@ import java.util.List;
 
 public class SrcSolrDocReader implements ItemReader<List<SolrInputDocument>> {
 
-    SrcSolrClient solrClient;
-    CursorMarkGlobalStorage cursorStorage;
+    private SrcSolrClient solrClient;
+    private CursorMarkGlobalStorage cursorStorage;
 
     private String lastCursorMark;
     private int docsPerRequest;

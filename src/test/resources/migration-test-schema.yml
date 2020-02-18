@@ -1,8 +1,8 @@
 uniqueKey: PID
 
 fields:
-  PID : PID
-  root : root
+  PID : PID_field
+  root : root_field
 
 processors:
   - TestProcessor
