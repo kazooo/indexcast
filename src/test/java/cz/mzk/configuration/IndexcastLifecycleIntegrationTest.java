@@ -5,7 +5,7 @@ import cz.mzk.solr.DstSolrClient;
 import cz.mzk.solr.SrcSolrClient;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.batch.core.Step;
+import org.springframework.batch.core.Job;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.repository.support.SimpleJobRepository;
 import org.springframework.batch.support.transaction.ResourcelessTransactionManager;
@@ -19,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {
+        IndexcastLifecycleConfiguration.class,
         CursorFetchingStepBuilder.class,
         MigrationStepBuilder.class,
         ProcessorAutoComposer.class,
@@ -36,26 +37,15 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
         "DST_SOLR_HOST=no_host",
         "SCHEMA_PATH=src/test/resources/migration-test-schema.yml"
 })
-public class StepBuilderIntegrationTest {
+public class IndexcastLifecycleIntegrationTest {
 
     @Autowired
-    private CursorFetchingStepBuilder cursorFetchingStepBuilder;
-
-    @Autowired
-    private MigrationStepBuilder migrationStepBuilder;
+    private IndexcastLifecycleConfiguration configuration;
 
     @Test
-    public void testCursorFetchingStepBuild() {
-        Step step = cursorFetchingStepBuilder.build("test-cursor-fetching");
-        assertNotNull(step);
-        assertEquals(step.getName(), "test-cursor-fetching");
-    }
-
-    @Test
-    public void testMigrationStepBuild() {
-        Step step = migrationStepBuilder.build("test-migration");
-        assertNotNull(step);
-        assertEquals(step.getName(), "test-migration");
+    public void testJobCreating() {
+        Job job = configuration.parallelStepsJob();
+        assertNotNull(job);
+        assertEquals(job.getName(), "parallel-solr-migration");
     }
 }
-
