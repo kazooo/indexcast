@@ -3,6 +3,7 @@ package cz.mzk.configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
+import org.springframework.batch.core.configuration.annotation.DefaultBatchConfigurer;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.job.builder.FlowBuilder;
@@ -12,6 +13,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 
+import javax.sql.DataSource;
+
 
 /**
  * @author Aleksei Ermak
@@ -19,7 +22,7 @@ import org.springframework.core.task.SimpleAsyncTaskExecutor;
 
 @Configuration
 @EnableBatchProcessing
-public class IndexcastLifecycleConfiguration {
+public class IndexcastLifecycleConfiguration extends DefaultBatchConfigurer {
 
     private final JobBuilderFactory jobBuilderFactory;
     private final CursorFetchingStepBuilder cursorFetchStepBuilder;
@@ -36,6 +39,11 @@ public class IndexcastLifecycleConfiguration {
         this.cursorFetchStepBuilder = cursorFetchStepBuilder;
         this.migrationStepBuilder = migrationStepBuilder;
         this.toolConfiguration = toolConfiguration;
+    }
+
+    @Override
+    public void setDataSource(DataSource dataSource) {
+        //This BatchConfigurer ignores any DataSource
     }
 
     @Bean

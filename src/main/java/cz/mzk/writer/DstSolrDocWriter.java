@@ -33,7 +33,7 @@ public class DstSolrDocWriter implements ItemWriter<List<SolrInputDocument>> {
                     waitForConnection();
                 }
             }
-            logger.debug("[send] " + docs.size() + " docs");
+            logger.info("[doc-writer][send] " + docs.size() + " docs");
         }
         solrClient.commit();
     }

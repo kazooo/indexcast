@@ -28,6 +28,7 @@ mainClassName = 'cz.mzk.IndexcastApplication'
 
 repositories {
     mavenCentral()
+    jcenter()
 }
 
 dependencies {
@@ -38,6 +39,8 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.13'
     testImplementation group: 'org.mockito', name: 'mockito-core', version: '3.2.4'
     testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.2.4.RELEASE'
+    testCompile group: 'org.springframework.batch', name: 'spring-batch-test', version: '4.2.1.RELEASE'
+    testImplementation group: 'org.apache.solr', name: 'solr-core', version: '8.4.1'
 }
 
 wrapper {

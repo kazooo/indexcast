@@ -1,3 +1,7 @@
 .idea
 .gradle
 build
+src/test/resources/src_solr/test_core/data
+src/test/resources/src_solr/filestore
+src/test/resources/dst_solr/test_core/data
+src/test/resources/dst_solr/filestore

@@ -1,8 +1,8 @@
-uniqueKey: PID
+uniqueKey: id
 
 fields:
-  PID : PID_field
-  root : root_field
+  id : id
+  title : title
 
 processors:
-  - TestProcessor
+  - FakeProcessor

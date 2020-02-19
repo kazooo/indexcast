@@ -27,7 +27,7 @@ public class CursorStorageWriter implements ItemWriter<Pair<String, Integer>> {
     @Override
     public void write(List<? extends Pair<String, Integer>> items) {
         for (Pair<String, Integer> i : items) {
-            logger.debug("[write] " + i.getKey());
+            logger.info("[cursor-writer][write] " + i.getKey());
             cursorStorage.addCursorAndObjNum(i.getKey(), i.getValue());
         }
     }

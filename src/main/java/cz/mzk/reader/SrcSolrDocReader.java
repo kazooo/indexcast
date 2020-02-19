@@ -69,10 +69,14 @@ public class SrcSolrDocReader implements ItemReader<List<SolrInputDocument>> {
     public List<SolrInputDocument> read() {
         if (lastCursorMark == null || done >= maxObjects) {
             Pair<String, Integer> cursorWithMaxObj = cursorStorage.getNextCursorAndObjNum();
-            if (cursorWithMaxObj == null) return null;
+            if (cursorWithMaxObj == null) {
+                logger.info("[doc-reader][finish] storage contains no cursor marks");
+                return null;
+            }
+            done = 0;
             lastCursorMark = cursorWithMaxObj.getKey();
             maxObjects = cursorWithMaxObj.getValue();
-            logger.debug("[got] " + lastCursorMark);
+            logger.info("[doc-reader][got] " + lastCursorMark);
         }
 
         SolrQuery query = generateQueryFromCursor(lastCursorMark);

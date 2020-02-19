@@ -58,10 +58,12 @@ public class SrcSolrCursorReader implements ItemReader<Pair<String, Integer>> {
 
         if (nextCursorMark.equals(lastCursorMark)) { // no more cursors, end of index
             cursorStorage.close();
+            logger.info("[cursor-reader][finish] reach the end of index, close cursor mark storage");
             return null;
         } else {
-            logger.debug("[read] " + lastCursorMark);
-            Pair<String, Integer> pair = new Pair<>(lastCursorMark, (int) (long) cursorAndNumFound.getValue());
+            logger.info("[cursor-reader][read] " + lastCursorMark);
+            int docsPart = Math.min(toolConfiguration.getDocsPerCycle(), (int) (long) cursorAndNumFound.getValue());
+            Pair<String, Integer> pair = new Pair<>(lastCursorMark, docsPart);
             lastCursorMark = nextCursorMark;
             return pair;
         }

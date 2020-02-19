@@ -34,7 +34,7 @@ public class CursorMarkGlobalStorage {
         while (cursorMarksWithObjectsCount.isEmpty() && !isClosed()) {
             waitForCursor();
         }
-        if (isClosed()) {
+        if (isClosed() && cursorMarksWithObjectsCount.isEmpty()) {
             return null;
         }
         Pair<String, Integer> cursorWithMaxObj = cursorMarksWithObjectsCount.remove(0);

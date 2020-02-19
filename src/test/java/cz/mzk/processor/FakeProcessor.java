@@ -17,7 +17,7 @@ public class FakeProcessor implements ProcessorInterface {
 
     @Override
     public List<SolrInputDocument> process(List<SolrInputDocument> item) {
-        logger.debug("I'm fake processor!");
+        logger.info("[fake-processor][process] got " + item.size() + " docs");
         return item;
     }
 }
