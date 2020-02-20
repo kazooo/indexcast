@@ -29,25 +29,25 @@ public class MigrationYAMLSchemaTest {
     @Test
     public void testSchemaProcessors() {
         List<String> processorNames = schema.getProcessorNames();
-        assertEquals(processorNames, Collections.singletonList("TestProcessor"));
+        assertEquals(processorNames, Collections.singletonList("FakeProcessor"));
     }
 
     @Test
     public void testRequestFields() {
         List<String> fieldNames = schema.getRequestFields();
-        assertEquals(fieldNames, Arrays.asList("PID", "root"));
+        assertEquals(fieldNames, Arrays.asList("id", "title"));
     }
 
     @Test
     public void testUniqueKey() {
         String uniqueKey = schema.getUniqueKey();
-        assertEquals(uniqueKey, "PID");
+        assertEquals(uniqueKey, "id");
     }
 
     @Test(expected = IllegalStateException.class)
     public void testSolrDocumentNonSpecifiedFieldConversion() {
         SolrDocument doc = new SolrDocument();
-        doc.addField("PID", "doc_pid");
+        doc.addField("id", "doc_id");
         doc.addField("text", "doc_text");
         schema.convert(doc);
     }
@@ -55,8 +55,8 @@ public class MigrationYAMLSchemaTest {
     @Test(expected = IllegalStateException.class)
     public void testSolrDocumentAdditionalFieldConversion() {
         SolrDocument doc = new SolrDocument();
-        doc.addField("PID", "doc_pid");
-        doc.addField("root", "doc_root");
+        doc.addField("id", "doc_id");
+        doc.addField("title", "doc_title");
         doc.addField("text", "doc_text");
         schema.convert(doc);
     }
@@ -64,8 +64,8 @@ public class MigrationYAMLSchemaTest {
     @Test
     public void testSolrDocumentSuccessfulConversion() {
         SolrDocument doc = new SolrDocument();
-        doc.addField("PID", "doc_pid");
-        doc.addField("root", "doc_root");
+        doc.addField("id", "doc_id");
+        doc.addField("title", "doc_title");
         schema.convert(doc);
     }
 }

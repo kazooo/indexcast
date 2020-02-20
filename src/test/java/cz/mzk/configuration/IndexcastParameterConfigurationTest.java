@@ -35,11 +35,11 @@ public class IndexcastParameterConfigurationTest {
         assertEquals(configuration.getThreads(), 3);
         assertEquals(configuration.getSrcSolrHost(), "no_host");
         assertEquals(configuration.getDstSolrHost(), "no_host");
-        assertEquals(configuration.getUniqKey(), "PID");
+        assertEquals(configuration.getUniqKey(), "id");
         assertEquals(configuration.getCoreName(), "solr/test");
         assertEquals(configuration.getDocsPerCycle(), 5000);
         assertEquals(configuration.getQuery(), "*:*");
         assertNotNull(configuration.getMigrationYAMLSchema());
-        assertEquals(configuration.getProcessorClassNames(), Collections.singletonList("TestProcessor"));
+        assertEquals(configuration.getProcessorClassNames(), Collections.singletonList("FakeProcessor"));
     }
 }

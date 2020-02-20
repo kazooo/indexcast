@@ -69,7 +69,7 @@ public class SrcSolrDocReaderTest {
     }
 
     private void setupMocks() throws IOException {
-        when(configuration.getUniqKey()).thenReturn("PID");
+        when(configuration.getUniqKey()).thenReturn("id");
         when(configuration.getQuery()).thenReturn("*:*");
         when(configuration.getMigrationYAMLSchema()).thenReturn(createSchema());
 
@@ -99,15 +99,15 @@ public class SrcSolrDocReaderTest {
 
     private SolrDocument createDoc() {
         SolrDocument doc = new SolrDocument();
-        doc.addField("PID", "doc_pid");
-        doc.addField("root", "doc_root");
+        doc.addField("id", "doc_id");
+        doc.addField("title", "doc_title");
         return doc;
     }
 
     private boolean docsAreOk(List<SolrInputDocument> docs) {
         for (SolrInputDocument doc : docs) {
             List<String> fieldNames = new ArrayList<>(doc.getFieldNames());
-            if (!Arrays.asList("PID_field", "root_field").equals(fieldNames))
+            if (!Arrays.asList("id", "title").equals(fieldNames))
                 return false;
         }
         return true;

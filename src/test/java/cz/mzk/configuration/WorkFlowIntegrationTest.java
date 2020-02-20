@@ -7,23 +7,11 @@ import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
 import org.apache.solr.common.SolrInputDocument;
 import org.apache.solr.core.CoreContainer;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.JobInstance;
-import org.springframework.batch.core.launch.support.SimpleJobLauncher;
-import org.springframework.batch.core.repository.JobRepository;
-import org.springframework.batch.core.repository.support.MapJobRepositoryFactoryBean;
-import org.springframework.batch.support.transaction.ResourcelessTransactionManager;
-import org.springframework.batch.test.JobLauncherTestUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -45,40 +33,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 })
 public class WorkFlowIntegrationTest {
 
-    @Autowired
-    private IndexcastLifecycleConfiguration configuration;
-
-    private JobLauncherTestUtils jobLauncherTestUtils;
-
-    @Before
-    public void setup() throws Exception {
-        Job indexcastParallelJob = configuration.parallelStepsJob();
-
-        ResourcelessTransactionManager transactionManager = new ResourcelessTransactionManager();
-
-        MapJobRepositoryFactoryBean factory = new MapJobRepositoryFactoryBean(transactionManager);
-        factory.setTransactionManager(transactionManager);
-        JobRepository jobRepository = factory.getObject();
-
-        SimpleJobLauncher jobLauncher = new SimpleJobLauncher();
-        jobLauncher.setJobRepository(jobRepository);
-        jobLauncher.setTaskExecutor(new SimpleAsyncTaskExecutor());
-
-        jobLauncherTestUtils = new JobLauncherTestUtils();
-        jobLauncherTestUtils.setJobLauncher(jobLauncher);
-        jobLauncherTestUtils.setJobRepository(jobRepository);
-        jobLauncherTestUtils.setJob(indexcastParallelJob);
-    }
-
     @Test
-    public void testJobInstanceName() throws Exception {
-        JobExecution jobExecution = jobLauncherTestUtils.launchJob();
-        JobInstance actualJobInstance = jobExecution.getJobInstance();
-        assertEquals(actualJobInstance.getJobName(), "parallel-solr-migration");
-    }
-
-    @After
-    public void testEntireApplication() throws IOException, SolrServerException {
+    public void testApplicationWorkResults() throws IOException, SolrServerException {
         int dstNumFound = (int) SolrServerClientTestContextConfiguration.dstSolrServer
                 .query(new SolrQuery("*:*")).getResults().getNumFound();
         assertEquals(100, dstNumFound);
@@ -90,6 +46,7 @@ public class WorkFlowIntegrationTest {
         static EmbeddedSolrServer srcSolrServer;
         static EmbeddedSolrServer dstSolrServer;
         static String coreName = "test_core";
+        static int docNum = 100;
 
         @Bean
         public DstSolrClient dstSolrClient() throws IOException, SolrServerException {
@@ -113,7 +70,7 @@ public class WorkFlowIntegrationTest {
 
             srcSolrServer.deleteByQuery("*:*");
             srcSolrServer.commit();
-            fillSrcSolr(100);
+            fillSrcSolr(docNum);
 
             SrcSolrClient client = new SrcSolrClient("no_host", "test_core");
             client.setupCustomSolrClient(srcSolrServer);
