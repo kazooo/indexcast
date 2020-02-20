@@ -5,7 +5,12 @@ import cz.mzk.solr.SrcSolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
+import org.apache.solr.client.solrj.request.CoreAdminRequest;
+import org.apache.solr.client.solrj.response.CoreAdminResponse;
 import org.apache.solr.common.SolrInputDocument;
+import org.apache.solr.common.params.CoreAdminParams;
+import org.apache.solr.common.util.NamedList;
+import org.apache.solr.common.util.SimpleOrderedMap;
 import org.apache.solr.core.CoreContainer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,22 +36,33 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
         "DST_SOLR_HOST=no_host",    //
         "SCHEMA_PATH=src/test/resources/migration-test-schema.yml"
 })
-public class WorkFlowIntegrationTest {
+public class ApplicationIntegrationTest {
+
+    static EmbeddedSolrServer srcSolrServer;
+    static EmbeddedSolrServer dstSolrServer;
+    static String coreName = "test_core";
+    private static int docNum = 100;
 
     @Test
     public void testApplicationWorkResults() throws IOException, SolrServerException {
-        int dstNumFound = (int) SolrServerClientTestContextConfiguration.dstSolrServer
-                .query(new SolrQuery("*:*")).getResults().getNumFound();
-        assertEquals(100, dstNumFound);
+        int dstNumFound = (int) dstSolrServer.query(new SolrQuery("*:*")).getResults().getNumFound();
+        assertEquals(docNum, dstNumFound);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testNoDeletedDocs() throws IOException, SolrServerException {
+        CoreAdminRequest request = new CoreAdminRequest();
+        request.setAction(CoreAdminParams.CoreAdminAction.STATUS);
+        CoreAdminResponse cores = request.process(dstSolrServer);
+        NamedList<Object> coreStatus = cores.getCoreStatus(coreName);
+        SimpleOrderedMap<Integer> indexStatus = (SimpleOrderedMap<Integer>) coreStatus.get("index");
+        int deletedDocs = indexStatus.get("deletedDocs");
+        assertEquals(0, deletedDocs);
     }
 
     @TestConfiguration
     static class SolrServerClientTestContextConfiguration {
-
-        static EmbeddedSolrServer srcSolrServer;
-        static EmbeddedSolrServer dstSolrServer;
-        static String coreName = "test_core";
-        static int docNum = 100;
 
         @Bean
         public DstSolrClient dstSolrClient() throws IOException, SolrServerException {

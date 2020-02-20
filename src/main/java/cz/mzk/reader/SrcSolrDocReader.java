@@ -33,7 +33,7 @@ public class SrcSolrDocReader implements ItemReader<List<SolrInputDocument>> {
     private CursorMarkGlobalStorage cursorStorage;
 
     private String lastCursorMark;
-    private int docsPerRequest;
+    private int defaultDocsPerRequest;
     private int maxObjects;
     private int done;
 
@@ -54,7 +54,7 @@ public class SrcSolrDocReader implements ItemReader<List<SolrInputDocument>> {
                             CursorMarkGlobalStorage storage,
                             SrcSolrClient client) {
         lastCursorMark = null;
-        docsPerRequest = 1000;
+        defaultDocsPerRequest = 1000;
         maxObjects = 0;
         done = 0;
         uniqKey = config.getUniqKey();
@@ -76,7 +76,7 @@ public class SrcSolrDocReader implements ItemReader<List<SolrInputDocument>> {
             done = 0;
             lastCursorMark = cursorWithMaxObj.getKey();
             maxObjects = cursorWithMaxObj.getValue();
-            logger.info("[doc-reader][got] " + lastCursorMark);
+            logger.info("[doc-reader][got] " + lastCursorMark + " " + maxObjects);
         }
 
         SolrQuery query = generateQueryFromCursor(lastCursorMark);
@@ -109,6 +109,6 @@ public class SrcSolrDocReader implements ItemReader<List<SolrInputDocument>> {
     }
 
     private int getRows() {
-        return Math.min((maxObjects - done), docsPerRequest);
+        return Math.min((maxObjects - done), defaultDocsPerRequest);
     }
 }
