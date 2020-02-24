@@ -1,6 +1,5 @@
 package cz.mzk.configuration;
 
-import cz.mzk.processor.FakeProcessor;
 import org.apache.solr.common.SolrInputDocument;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,7 +8,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.batch.item.support.CompositeItemProcessor;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.List;
 

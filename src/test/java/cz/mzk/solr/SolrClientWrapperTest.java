@@ -63,9 +63,9 @@ public class SolrClientWrapperTest {
         when(response.getNextCursorMark()).thenReturn("cursor");
         when(mockSolrClient.query(any(String.class), any(SolrQuery.class)))
                 .thenReturn(response);
-        Pair<String, Long> wrapperResponse = wrapper.queryCursorAndNumFound(new SolrQuery());
+        Pair<String, Integer> wrapperResponse = wrapper.queryCursorAndNumFound(new SolrQuery());
         assertEquals(wrapperResponse.getKey(), "cursor");
-        assertEquals((int) (long) wrapperResponse.getValue(), 2);
+        assertEquals(2, (int) wrapperResponse.getValue());
     }
 
     @Test

@@ -53,7 +53,7 @@ public class SrcSolrCursorReader implements ItemReader<Pair<String, Integer>> {
     @Override
     public Pair<String, Integer> read() {
         SolrQuery query = generateQueryFromCursor(lastCursorMark);
-        Pair<String, Long> cursorAndNumFound = solrClient.queryCursorAndNumFound(query);
+        Pair<String, Integer> cursorAndNumFound = solrClient.queryCursorAndNumFound(query);
         String nextCursorMark = cursorAndNumFound.getKey();
 
         if (nextCursorMark.equals(lastCursorMark)) { // no more cursors, end of index
@@ -62,7 +62,7 @@ public class SrcSolrCursorReader implements ItemReader<Pair<String, Integer>> {
             return null;
         } else {
             logger.info("[cursor-reader][read] " + lastCursorMark);
-            int docsPart = Math.min(toolConfiguration.getDocsPerCycle(), (int) (long) cursorAndNumFound.getValue());
+            int docsPart = Math.min(toolConfiguration.getDocsPerCycle(), cursorAndNumFound.getValue());
             Pair<String, Integer> pair = new Pair<>(lastCursorMark, docsPart);
             lastCursorMark = nextCursorMark;
             return pair;

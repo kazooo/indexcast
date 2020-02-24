@@ -41,7 +41,7 @@ public class ApplicationIntegrationTest {
     static EmbeddedSolrServer srcSolrServer;
     static EmbeddedSolrServer dstSolrServer;
     static String coreName = "test_core";
-    private static int docNum = 100;
+    private static int docNum = 321;
 
     @Test
     public void testApplicationWorkResults() throws IOException, SolrServerException {
