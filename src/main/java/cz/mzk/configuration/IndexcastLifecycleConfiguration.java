@@ -17,6 +17,10 @@ import javax.sql.DataSource;
 
 
 /**
+ * Main configuration for Spring Batch project.
+ * At start creates job constructed from parallel running steps.
+ * One step is responsible for fetching cursor marks, another ones process and migrate Solr documents.
+ *
  * @author Aleksei Ermak
  */
 

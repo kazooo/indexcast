@@ -15,6 +15,9 @@ import java.util.List;
 
 
 /**
+ * Configuration to keep Indexcast application parameters.
+ * Loads and initializes migration schema and reads parameters from system properties.
+ *
  * @author Aleksei Ermak
  */
 

@@ -16,6 +16,9 @@ import java.util.List;
 
 
 /**
+ * This builder creates Spring Batch step responsible for Solr document
+ * processing and migration from source Solr instance to destination Solr instance.
+ *
  * @author Aleksei Ermak
  */
 

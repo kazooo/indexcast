@@ -8,6 +8,8 @@ import java.util.List;
 
 
 /**
+ * Test processor, does nothing and successfully.
+ *
  * @author Aleksei Ermak
  */
 

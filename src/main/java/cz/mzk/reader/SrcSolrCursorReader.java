@@ -13,7 +13,7 @@ import org.springframework.batch.item.ItemReader;
 
 /**
  * This reader fetch cursors from source Solr instance.
- * With cursor it requests for numFound number representing how many objects can read from previous cursor.
+ * With cursor it requests for docs-to-migrate number representing how many objects can read from previous cursor.
  *
  * @author Aleksei Ermak
  */
@@ -44,11 +44,11 @@ public class SrcSolrCursorReader implements ItemReader<Pair<String, Integer>> {
     }
 
     /**
-     * Function requests cursors and numFound numbers from source Solr instance.
+     * Function requests cursors and docs-to-migrate numbers from source Solr instance.
      * If the last fetched cursor is the same as previous cursor mark, close cursor storage and return null.
      * Otherwise return previous cursor mark and how many documents can be fetched from this cursor.
      *
-     * @return null or pair structure with cursor and numFound number
+     * @return null or pair structure with cursor and docs-to-migrate number
      */
     @Override
     public Pair<String, Integer> read() {

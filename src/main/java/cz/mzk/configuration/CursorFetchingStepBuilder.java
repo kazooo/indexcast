@@ -13,6 +13,8 @@ import org.springframework.context.annotation.Configuration;
 
 
 /**
+ * This builder creates Spring Batch step responsible for cursor marks fetching from source Solr instance.
+ *
  * @author Aleksei Ermak
  */
 

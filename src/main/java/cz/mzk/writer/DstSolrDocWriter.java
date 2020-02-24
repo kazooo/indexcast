@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  * This writer sends processed Solr input documents to destination Solr instance.
- * At the end commits changes.
+ * At the end commits changes. If any connection errors occurred, waits for 1 minute and tries again.
  *
  * @author Aleksei Ermak
  */

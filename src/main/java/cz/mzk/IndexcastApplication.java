@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 
 /**
  * Indexcast application start point.
- * Exclude jdbc.DataSourceAutoConfiguration run Spring Batch application without database usage.
+ * Exclude jdbc.DataSourceAutoConfiguration to run Spring Batch application without database usage.
  *
  * @author Aleksei Ermak
  */

@@ -2,6 +2,10 @@ package cz.mzk.component;
 
 import java.util.Objects;
 
+
+/**
+ * This class is used in project as auxiliary structure.
+ */
 public class Pair<K,V> {
 
     private K key;

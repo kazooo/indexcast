@@ -9,11 +9,6 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-
-/**
- * @author Aleksei Ermak
- */
-
 public class CursorStorageWriterTest {
 
     @Test

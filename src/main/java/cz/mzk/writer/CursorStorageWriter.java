@@ -10,7 +10,7 @@ import java.util.List;
 
 
 /**
- * This writer stores fetched cursor and numFound numbers into cursor mark storage.
+ * This writer stores fetched cursor and docs-to-migrate number into cursor mark storage.
  *
  * @author Aleksei Ermak
  */

@@ -15,6 +15,8 @@ import java.io.IOException;
 
 
 /**
+ * This class is used as a wrapper for Solrj client instance.
+ *
  * @author Aleksei Ermak
  */
 

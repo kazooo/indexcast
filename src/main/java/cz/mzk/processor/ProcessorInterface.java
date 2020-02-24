@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  * Simplified interface for ItemProcessor<List<SolrInputDocument>, List<SolrInputDocument>> type.
- * Do nothing just make processor type name short and lightweight.
+ * Does nothing just makes processor type name short and lightweight.
  *
  * @author Aleksei Ermak
  */

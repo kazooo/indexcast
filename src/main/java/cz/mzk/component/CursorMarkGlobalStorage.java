@@ -8,6 +8,9 @@ import java.util.*;
 
 
 /**
+ * This class is used as a global synchronized storage for cursor marks
+ * and document numbers for migration from this marks. Closes when has no marks, announcing the end of the migration.
+ *
  * @author Aleksei Ermak
  */
 
@@ -23,6 +26,12 @@ public class CursorMarkGlobalStorage {
         cursorMarksWithObjectsCount = Collections.synchronizedList(new ArrayList<>());
     }
 
+    /**
+     * Stores new cursor mark with docs-to-migrate number.
+     *
+     * @param cursorMark  new cursor mark
+     * @param objNum      how many documents can be read from given cursor mark
+     */
     public void addCursorAndObjNum(String cursorMark, Integer objNum) {
         synchronized (cursorMarksWithObjectsCount) {
             logger.debug("[store] " + cursorMark);
@@ -30,6 +39,13 @@ public class CursorMarkGlobalStorage {
         }
     }
 
+    /**
+     * Retrieves cursor mark and docs-to-migrate number from storage.
+     * If any thread already in a safe zone, another threads wait for it release.
+     * If after zone release there is no more cursors and storage is closed, returns null.
+     *
+     * @return  cursor mark and docs-to-migrate number
+     */
     public synchronized Pair<String, Integer> getNextCursorAndObjNum() {
         while (cursorMarksWithObjectsCount.isEmpty() && !isClosed()) {
             waitForCursor();
@@ -51,6 +67,9 @@ public class CursorMarkGlobalStorage {
         return noMoreCursors;
     }
 
+    /**
+     * Make thread wait 3 seconds before it can check storage again.
+     */
     private void waitForCursor() {
         try {
             Thread.sleep(3000); // sleep 3 sec

@@ -17,6 +17,9 @@ import java.util.List;
 
 
 /**
+ * This composer is used to load custom processors from processor package and composites them.
+ * If no processors have been specified by migration schema, returns empty CompositeProcessor object.
+ *
  * @author Aleksei Ermak
  */
 
@@ -34,7 +37,7 @@ public class ProcessorAutoComposer {
     public CompositeItemProcessor<List<SolrInputDocument>, List<SolrInputDocument>> composite() {
         List<String> processorNames = toolConfiguration.getProcessorClassNames();
         if (processorNames == null) {
-            return null;             // no processors specified, keep migrate without them
+            return null;             // no processors have been specified, keep migrate without them
         }
 
         CompositeItemProcessor<List<SolrInputDocument>, List<SolrInputDocument>> compositeProcessor =

@@ -6,6 +6,8 @@ import org.springframework.stereotype.Component;
 
 
 /**
+ * Destination Solr instance client configuring by Spring Boot autowiring.
+ *
  * @author Aleksei Ermak
  */
 

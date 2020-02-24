@@ -20,9 +20,9 @@ import java.util.List;
 
 /**
  * This reader requests source Solr instance for batches of documents.
- * If reader starts fetching new part it read cursor mark and numFound number representing how many documents
+ * If reader starts fetching new part it read cursor mark and docs-to-migrate number representing how many documents
  * can be read from source Solr instance from storage. Then it requests Solr instance for documents
- * in several cycles  until they count reach numFound number.
+ * in several cycles  until they count reach docs-to-migrate number.
  *
  * @author Aleksei Ermak
  */

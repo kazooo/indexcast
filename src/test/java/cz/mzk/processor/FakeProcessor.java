@@ -7,10 +7,6 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 
 
-/**
- * @author Aleksei Ermak
- */
-
 public class FakeProcessor implements ProcessorInterface {
 
     private final Logger logger = LoggerFactory.getLogger(TestProcessor.class);

@@ -26,11 +26,6 @@ import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-
-/**
- * @author Aleksei Ermak
- */
-
 @RunWith(MockitoJUnitRunner.class)
 public class SrcSolrDocReaderTest {
 
