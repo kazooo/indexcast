@@ -20,7 +20,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
         "THREADS=3",
         "QUERY=*:*",
         "PER_CYCLE=5000",
-        "CORE_NAME=solr/test",
+        "SRC_CORE_NAME=solr/src_test",
+        "DST_CORE_NAME=solr/dst_test",
         "SRC_SOLR_HOST=no_host",
         "DST_SOLR_HOST=no_host",
         "SCHEMA_PATH=src/test/resources/migration-test-schema.yml"
@@ -36,7 +37,8 @@ public class IndexcastParameterConfigurationTest {
         assertEquals(configuration.getSrcSolrHost(), "no_host");
         assertEquals(configuration.getDstSolrHost(), "no_host");
         assertEquals(configuration.getUniqKey(), "id");
-        assertEquals(configuration.getCoreName(), "solr/test");
+        assertEquals(configuration.getSrcCoreName(), "solr/src_test");
+        assertEquals(configuration.getDstCoreName(), "solr/dst_test");
         assertEquals(configuration.getDocsPerCycle(), 5000);
         assertEquals(configuration.getQuery(), "*:*");
         assertNotNull(configuration.getMigrationYAMLSchema());

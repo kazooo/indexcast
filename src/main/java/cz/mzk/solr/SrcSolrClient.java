@@ -16,7 +16,7 @@ public class SrcSolrClient extends SolrClientWrapper {
 
     @Autowired
     public SrcSolrClient(@Value("#{indexcastParameterConfiguration.srcSolrHost}") String srcSolrHost,
-                         @Value("#{indexcastParameterConfiguration.coreName}") String coreName) {
+                         @Value("#{indexcastParameterConfiguration.srcCoreName}") String coreName) {
         super(srcSolrHost, coreName);
     }
 }

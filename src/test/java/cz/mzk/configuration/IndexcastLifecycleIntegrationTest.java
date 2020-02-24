@@ -39,7 +39,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
         DstSolrClient.class
 })
 @TestPropertySource(properties = {
-        "CORE_NAME=solr/test",
+        "SRC_CORE_NAME=solr/test",
+        "DST_CORE_NAME=solr/test",
         "SRC_SOLR_HOST=no_host",
         "DST_SOLR_HOST=no_host",
         "SCHEMA_PATH=src/test/resources/migration-test-schema.yml"

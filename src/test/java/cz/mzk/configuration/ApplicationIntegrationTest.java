@@ -31,16 +31,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
         "THREADS=3",
         "QUERY=*:*",
         "PER_CYCLE=10",
-        "CORE_NAME=solr/test_core", //
-        "SRC_SOLR_HOST=no_host",    // unnecessary properties, only for parameter configuration filling
-        "DST_SOLR_HOST=no_host",    //
+        "SRC_CORE_NAME=solr/test_core", //
+        "DST_CORE_NAME=solr/test_core", //
+        "SRC_SOLR_HOST=no_host",        // unnecessary properties, only for parameter configuration filling
+        "DST_SOLR_HOST=no_host",        //
         "SCHEMA_PATH=src/test/resources/migration-test-schema.yml"
 })
 public class ApplicationIntegrationTest {
 
     static EmbeddedSolrServer srcSolrServer;
     static EmbeddedSolrServer dstSolrServer;
-    static String coreName = "test_core";
+    static String srcCoreName = "test_src_core";
+    static String dstCoreName = "test_dst_core";
     private static int docNum = 321;
 
     @Test
@@ -55,7 +57,7 @@ public class ApplicationIntegrationTest {
         CoreAdminRequest request = new CoreAdminRequest();
         request.setAction(CoreAdminParams.CoreAdminAction.STATUS);
         CoreAdminResponse cores = request.process(dstSolrServer);
-        NamedList<Object> coreStatus = cores.getCoreStatus(coreName);
+        NamedList<Object> coreStatus = cores.getCoreStatus(dstCoreName);
         SimpleOrderedMap<Integer> indexStatus = (SimpleOrderedMap<Integer>) coreStatus.get("index");
         int deletedDocs = indexStatus.get("deletedDocs");
         assertEquals(0, deletedDocs);
@@ -65,31 +67,31 @@ public class ApplicationIntegrationTest {
     static class SolrServerClientTestContextConfiguration {
 
         @Bean
-        public DstSolrClient dstSolrClient() throws IOException, SolrServerException {
-            CoreContainer dstContainer = new CoreContainer("src/test/resources/dst_solr");
-            dstContainer.load();
-            dstSolrServer = new EmbeddedSolrServer(dstContainer, coreName);
-
-            dstSolrServer.deleteByQuery("*:*");
-            dstSolrServer.commit();
-
-            DstSolrClient client = new DstSolrClient("no_host", "test_core");
-            client.setupCustomSolrClient(dstSolrServer);
-            return client;
-        }
-
-        @Bean
         public SrcSolrClient srcSolrClient() throws IOException, SolrServerException {
             CoreContainer srcContainer = new CoreContainer("src/test/resources/src_solr");
             srcContainer.load();
-            srcSolrServer = new EmbeddedSolrServer(srcContainer, coreName);
+            srcSolrServer = new EmbeddedSolrServer(srcContainer, srcCoreName);
 
             srcSolrServer.deleteByQuery("*:*");
             srcSolrServer.commit();
             fillSrcSolr(docNum);
 
-            SrcSolrClient client = new SrcSolrClient("no_host", "test_core");
+            SrcSolrClient client = new SrcSolrClient("no_host", srcCoreName);
             client.setupCustomSolrClient(srcSolrServer);
+            return client;
+        }
+
+        @Bean
+        public DstSolrClient dstSolrClient() throws IOException, SolrServerException {
+            CoreContainer dstContainer = new CoreContainer("src/test/resources/dst_solr");
+            dstContainer.load();
+            dstSolrServer = new EmbeddedSolrServer(dstContainer, dstCoreName);
+
+            dstSolrServer.deleteByQuery("*:*");
+            dstSolrServer.commit();
+
+            DstSolrClient client = new DstSolrClient("no_host", dstCoreName);
+            client.setupCustomSolrClient(dstSolrServer);
             return client;
         }
 

@@ -42,8 +42,11 @@ public class IndexcastParameterConfiguration {
     @Value("${SCHEMA_PATH}")
     private String pathToSchema;
 
-    @Value("${CORE_NAME}")
-    private String coreName;
+    @Value("${SRC_CORE_NAME}")
+    private String srcCoreName;
+
+    @Value("${DST_CORE_NAME}")
+    private String dstCoreName;
 
     private MigrationYAMLSchema migrationYAMLSchema;
 
@@ -56,13 +59,14 @@ public class IndexcastParameterConfiguration {
         migrationYAMLSchema = mapper.readValue(file, MigrationYAMLSchema.class);
         migrationYAMLSchema.setUpRequestFields();
 
-        logger.info("                Query: " + query);
-        logger.info("            Core name: " + coreName);
-        logger.info("              Threads: " + threads);
-        logger.info("  Documents per cycle: " + docsPerCycle);
-        logger.info("       Path to schema: " + pathToSchema);
-        logger.info("     Source Solr host: " + srcSolrHost);
-        logger.info("Destination Solr host: " + dstSolrHost);
+        logger.info("                     Query: " + query);
+        logger.info("                   Threads: " + threads);
+        logger.info("       Documents per cycle: " + docsPerCycle);
+        logger.info("            Path to schema: " + pathToSchema);
+        logger.info("          Source Solr host: " + srcSolrHost);
+        logger.info("     Source Solr core name: " + srcCoreName);
+        logger.info("     Destination Solr host: " + dstSolrHost);
+        logger.info("Destination Solr core name: " + dstCoreName);
     }
 
     public List<String> getProcessorClassNames() {
@@ -93,8 +97,12 @@ public class IndexcastParameterConfiguration {
         return migrationYAMLSchema;
     }
 
-    public String getCoreName() {
-        return coreName;
+    public String getDstCoreName() {
+        return dstCoreName;
+    }
+
+    public String getSrcCoreName() {
+        return srcCoreName;
     }
 
     public String getUniqKey() {
