@@ -12,9 +12,9 @@ Indexcast is a simple migration tool for the Solr search engine.
 This allows quickly transfer documents from one Solr instance to another and, moreover,
 process and automatically change document fields content during migration using custom processors.
 
-### Application description
+## Application description
 
-Indexcast is a Spring Batch based application that can quickly transfer Solr documents 
+Indexcast is a [Spring Batch](https://spring.io/projects/spring-batch) based application that can quickly transfer Solr documents 
 in parallel across multiple threads. It uses Solr's cursor pagination to logically separate 
 source Solr index into parts that are migrated by application threads later.
 
@@ -38,7 +38,7 @@ After processing all documents are sent to destination Solr instance.
 When thread transfers *docs-to-migrate number* documents it requesting the next cursor mark from global storage.
 If global storage is closed and has no cursor marks, application finishes successfully.
 
-### Tool parameters
+## Tool parameters
 
 Before launching Indexcast you must configure application providing parameters below:
 
@@ -68,7 +68,7 @@ or using Gradle 'bootRun'
 
 Indexcast can read mentioned above parameters from environment variables too.
 
-### Migration schema
+## Migration schema
 
 Indexcast migrate Solr documents according with *migration schema* in YAML format. 
 In this schema you must specify source Solr unique key and fields you want to be migrated.
@@ -92,7 +92,7 @@ processors:
   - TextTransformationProcessor
 ```
 
-### Processors
+## Processors
 
 Processors are the parts of application that can modify document fields content.
 You can write your own processor, it must implement the *ProcessorInterface* interface 
@@ -116,9 +116,9 @@ public class TestProcessor implements ProcessorInterface {
 }
 ```
 
-### Docker
+## Docker
 
-Indexcast can run in Docker container. Official Indexcast Docker image (without any processors) is available on DockerHub.
+Indexcast can run in [Docker](https://www.docker.com/) container. Official Indexcast Docker image (without any processors) is available on [DockerHub](https://hub.docker.com/repository/docker/ermak/indexcast).
 You can normally dockerize Indexcast with your own processors using Gradle Docker plugin:
 
 ```bash
@@ -144,5 +144,5 @@ services:
       - SRC_CORE_NAME=solr/test_src_core
       - DST_SOLR_HOST=http://localhost:8984
       - DST_CORE_NAME=solr/test_dst_core
-      - LOGGING_LEVEL_CZ_MZK=DEBUG
+      - LOGGING_LEVEL_COM=DEBUG
 ```
