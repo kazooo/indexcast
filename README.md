@@ -6,6 +6,7 @@
 
 [![Build Status](https://travis-ci.com/kazooo/indexcast.svg?token=9hx2FG2heDSbUifJsALk&branch=master)](https://travis-ci.com/kazooo/indexcast)
 [![codecov](https://codecov.io/gh/kazooo/indexcast/branch/master/graph/badge.svg?token=3IPajdP7Sf)](https://codecov.io/gh/kazooo/indexcast)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 Indexcast is a simple migration tool for the Solr search engine.
 This allows quickly transfer documents from one Solr instance to another and, moreover,
@@ -41,17 +42,17 @@ If global storage is closed and has no cursor marks, application finishes succes
 
 Before launching Indexcast you must configure application providing parameters below:
 
-| parameter            | description                           | example                                 | required | default value |
-|   :---               |    :---                               |  :---                                   |   :---:  |  :---:        |
-| THREADS              | threads number                        | 5                                       | false    | 4             |
-| QUERY                | query specifying documents            | \*:*                                    | false    | \*:*          |
-| PER_CYCLE            | how many docs thread can load at once | 100                                     | false    | 5000          |
-| SCHEMA_PATH          | path to migration schema              | src/test/resources/migration-schema.yml | true     |
-| SRC_SOLR_HOST        | source Solr host                      | http://solr-host.com                    | true     |
-| DST_SOLR_HOST        | destination Solr host                 | http://solr-host.com                    | true     |
-| SRC_CORE_NAME        | source Solr core name                 | solr/test_src_core                      | true     |
-| DST_CORE_NAME        | source Solr core name                 | solr/test_dst_core                      | true     |
-| LOGGING_LEVEL_CZ_MZK | application logging level             | DEBUG                                   | false    |
+| parameter         | description                           | example                                 | required | default value |
+|   :---            |    :---                               |  :---                                   |   :---:  |  :---:        |
+| THREADS           | threads number                        | 5                                       | false    | 4             |
+| QUERY             | query specifying documents            | \*:*                                    | false    | \*:*          |
+| PER_CYCLE         | how many docs thread can load at once | 100                                     | false    | 5000          |
+| SCHEMA_PATH       | path to migration schema              | src/test/resources/migration-schema.yml | true     |
+| SRC_SOLR_HOST     | source Solr host                      | http://solr-host.com                    | true     |
+| DST_SOLR_HOST     | destination Solr host                 | http://solr-host.com                    | true     |
+| SRC_CORE_NAME     | source Solr core name                 | solr/test_src_core                      | true     |
+| DST_CORE_NAME     | source Solr core name                 | solr/test_dst_core                      | true     |
+| LOGGING_LEVEL_COM | application logging level             | DEBUG                                   | false    | INFO          |
 
 With parameters above you can start Indexcast executable jar file
 
