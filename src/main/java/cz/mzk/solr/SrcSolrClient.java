@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PreDestroy;
+
 
 /**
  * Source Solr instance client configuring by Spring Boot autowiring.
@@ -18,5 +20,10 @@ public class SrcSolrClient extends SolrClientWrapper {
     public SrcSolrClient(@Value("#{indexcastParameterConfiguration.srcSolrHost}") String srcSolrHost,
                          @Value("#{indexcastParameterConfiguration.srcCoreName}") String coreName) {
         super(srcSolrHost, coreName);
+    }
+
+    @PreDestroy
+    public void onDestroy() {
+        super.close();
     }
 }

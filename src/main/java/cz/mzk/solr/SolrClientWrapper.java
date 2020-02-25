@@ -81,4 +81,13 @@ public class SolrClientWrapper {
             e.printStackTrace();
         }
     }
+
+    public void close() {
+        try {
+            client.close();
+        } catch (IOException e) {
+            logger.error("Can't close connection with Solr instance!");
+            e.printStackTrace();
+        }
+    }
 }

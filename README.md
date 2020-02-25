@@ -17,7 +17,7 @@ Indexcast is a Spring Batch based application that can quickly transfer Solr doc
 in parallel across multiple threads. It uses Solr's cursor pagination to logically separate 
 source Solr index into parts that are migrated by application threads later.
 
-At the start according with given parameter **THREADS = n** Indexcast starts **n+1** threads.
+At the start according with given parameter **THREADS=n** Indexcast starts **n+1** threads.
 All threads request for cursor marks and documents using query given by **QUERY** parameter.
 
 One thread continuously initializes cursor marks that logically separate source Solr index into parts.

@@ -1,8 +1,8 @@
-uniqueKey: PID
+uniqueKey: id
 
 fields:
-  PID : PID
-  root : root
+  id : id
+  text : transformed_text
 
 processors:
-  - TestProcessor
+  - TextTransformationProcessor

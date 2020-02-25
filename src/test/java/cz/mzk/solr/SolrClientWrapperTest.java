@@ -18,6 +18,7 @@ import java.io.IOException;
 
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -94,9 +95,19 @@ public class SolrClientWrapperTest {
 
     @Test
     public void testFailedCommit() throws IOException, SolrServerException {
-        when(mockSolrClient.commit(any(String.class)))
-                .thenThrow(SolrServerException.class);
+        when(mockSolrClient.commit(any(String.class))).thenThrow(SolrServerException.class);
         wrapper.commit();
+    }
+
+    @Test
+    public void testSuccessfulClose() {
+        wrapper.close();
+    }
+
+    @Test
+    public void testFailedClose() throws IOException {
+        doThrow(IOException.class).when(mockSolrClient).close();
+        wrapper.close();
     }
 
     private SolrDocumentList createFakeSolrDocList() {
