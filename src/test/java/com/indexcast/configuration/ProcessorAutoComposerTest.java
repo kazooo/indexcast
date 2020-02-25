@@ -32,7 +32,7 @@ public class ProcessorAutoComposerTest {
         when(configuration.getProcessorClassNames()).thenReturn(Collections.singletonList("FakeProcessor"));
         CompositeItemProcessor<List<SolrInputDocument>, List<SolrInputDocument>> processor = composer.composite();
         assertNotNull(processor);
-        assertTrue(processorHasBeenLoaded("cz.mzk.processor.FakeProcessor"));
+        assertTrue(processorHasBeenLoaded("com.indexcast.processor.FakeProcessor"));
     }
 
     @Test
