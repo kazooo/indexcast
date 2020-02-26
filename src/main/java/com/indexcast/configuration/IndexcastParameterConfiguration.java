@@ -48,6 +48,9 @@ public class IndexcastParameterConfiguration {
     @Value("${DST_CORE_NAME}")
     private String dstCoreName;
 
+    @Value("${WAIT_IF_SOLR_FAIL:60000}")
+    private int waitMillisIfSolrFail;
+
     private MigrationYAMLSchema migrationYAMLSchema;
 
     private final Logger logger = LoggerFactory.getLogger(IndexcastParameterConfiguration.class);

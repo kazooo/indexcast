@@ -18,8 +18,9 @@ public class SrcSolrClient extends SolrClientWrapper {
 
     @Autowired
     public SrcSolrClient(@Value("#{indexcastParameterConfiguration.srcSolrHost}") String srcSolrHost,
-                         @Value("#{indexcastParameterConfiguration.srcCoreName}") String coreName) {
-        super(srcSolrHost, coreName, 60000);
+                         @Value("#{indexcastParameterConfiguration.srcCoreName}") String coreName,
+                         @Value("#{indexcastParameterConfiguration.waitMillisIfSolrFail}") int waitIfSolrFail) {
+        super(srcSolrHost, coreName, waitIfSolrFail);
     }
 
     @PreDestroy

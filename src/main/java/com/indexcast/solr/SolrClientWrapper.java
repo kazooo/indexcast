@@ -26,13 +26,13 @@ public class SolrClientWrapper {
     private SolrClient client;
     private String solrHost;
     private String coreName;
-    private int waitMillisecondsIfFailed;
+    private int waitMillisecondsIfFail;
     private final Logger logger = LoggerFactory.getLogger(SolrClientWrapper.class);
 
-    public SolrClientWrapper(String url, String coreName, int waitIfFailed) {
+    public SolrClientWrapper(String url, String coreName, int waitIfFail) {
         this.coreName = coreName;
         this.solrHost = url;
-        this.waitMillisecondsIfFailed = waitIfFailed;
+        this.waitMillisecondsIfFail = waitIfFail;
         client = new HttpSolrClient.Builder(url)
                 .withConnectionTimeout(10000)
                 .withSocketTimeout(60000)
@@ -106,12 +106,12 @@ public class SolrClientWrapper {
                 SolrPingResponse pingResponse = client.ping(coreName);
                 int status = pingResponse.getStatus();
                 logger.warn("Solr at " + solrHost + " returns ping status " + status +
-                        ". Retry operation after " + (waitMillisecondsIfFailed/1000) + " second(s)...");
+                        ". Retry operation after " + (waitMillisecondsIfFail/1000) + " second(s)...");
                 waitSomeMilliseconds();
                 return;
             } catch (NullPointerException | SolrServerException | IOException e) {
                 logger.warn("Lost connection with " + solrHost +
-                        "! Check ping status again after " + (waitMillisecondsIfFailed/1000) + " second(s)...");
+                        "! Check ping status again after " + (waitMillisecondsIfFail/1000) + " second(s)...");
                 waitSomeMilliseconds();
             }
         }
@@ -119,7 +119,7 @@ public class SolrClientWrapper {
 
     private void waitSomeMilliseconds() {
         try {
-            Thread.sleep(waitMillisecondsIfFailed);
+            Thread.sleep(waitMillisecondsIfFail);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

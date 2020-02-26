@@ -8,7 +8,7 @@
 [![codecov](https://codecov.io/gh/kazooo/indexcast/branch/master/graph/badge.svg?token=3IPajdP7Sf)](https://codecov.io/gh/kazooo/indexcast)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
-Indexcast is a simple migration tool for the Solr search engine.
+Indexcast is a simple migration tool for the [Solr](https://lucene.apache.org/solr) search engine.
 This allows quickly transfer documents from one Solr instance to another and, moreover,
 process and automatically change document fields content during migration using custom processors.
 
@@ -53,11 +53,12 @@ Before launching Indexcast you must configure application providing parameters b
 | SRC_CORE_NAME     | source Solr core name                 | solr/test_src_core                      | true     |
 | DST_CORE_NAME     | source Solr core name                 | solr/test_dst_core                      | true     |
 | LOGGING_LEVEL_COM | application logging level             | DEBUG                                   | false    | INFO          |
+| WAIT_IF_SOLR_FAIL | time to wait in milliseconds if any Solr instance has a problem | 3000          | false    | 60000         |
 
 With parameters above you can start Indexcast executable jar file
 
 ```bash
-java -DSRC_SOLR_HOST=http://solr-host <another parameters with '-D' prefix> -jar build/libs/indexcast-1.0.0.jar 
+java -DSRC_SOLR_HOST=http://solr-host <another parameters with '-D' prefix> -jar indexcast-1.0.0.jar 
 ```
 
 or using Gradle 'bootRun'
@@ -118,7 +119,8 @@ public class TestProcessor implements ProcessorInterface {
 
 ## Docker
 
-Indexcast can run in [Docker](https://www.docker.com/) container. Official Indexcast Docker image (without any processors) is available on [DockerHub](https://hub.docker.com/repository/docker/ermak/indexcast).
+Indexcast can run in [Docker](https://www.docker.com) container. Official Indexcast Docker 
+image (without any processors) is available on [DockerHub](https://hub.docker.com/repository/docker/ermak/indexcast).
 You can normally dockerize Indexcast with your own processors using Gradle Docker plugin:
 
 ```bash
