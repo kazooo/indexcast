@@ -46,7 +46,6 @@ and is still supported in modern versions of Solr.
 
 This tool is build with the help of the [Gradle Wrapper](https://docs.gradle.org/current/userguide/gradle_wrapper.html)
 which uses [Gradle build tool](https://gradle.org/) version 6.1.1. 
-
 To add Gradle Wrapper you should have installed Gradle version >= 5.6.2 and run command in project folder:
 
 ```bash
@@ -73,6 +72,7 @@ Before launching Indexcast you must configure application providing parameters b
 With parameters above you can start Indexcast executable jar file
 
 ```bash
+./gradlew bootJar
 java -DSRC_SOLR_HOST=http://solr-host <another parameters with '-D' prefix> -jar indexcast-1.0.0.jar 
 ```
 
@@ -142,7 +142,7 @@ You can normally dockerize Indexcast with your own processors using Gradle Docke
 ./gradlew docker
 ```
 
-Also you can use Docker compose to quickly configure and launch Indexcast:
+Also you can use [Docker compose](https://docs.docker.com/compose) to quickly configure and launch Indexcast:
 
 ```yaml
 version: '3'
