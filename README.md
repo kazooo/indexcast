@@ -38,6 +38,21 @@ After processing all documents are sent to destination Solr instance.
 When thread transfers *docs-to-migrate number* documents it requesting the next cursor mark from global storage.
 If global storage is closed and has no cursor marks, application finishes successfully.
 
+## Prerequisites
+
+The source Solr instance should support deep paging by cursor marks.
+This feature [appeared](https://issues.apache.org/jira/browse/SOLR-5463) in Solr version 4.7.0 
+and is still supported in modern versions of Solr.
+
+This tool is build with the help of the [Gradle Wrapper](https://docs.gradle.org/current/userguide/gradle_wrapper.html)
+which uses [Gradle build tool](https://gradle.org/) version 6.1.1. 
+
+To add Gradle Wrapper you should have installed Gradle version >= 5.6.2 and run command in project folder:
+
+```bash
+gradle wrapper
+```
+
 ## Tool parameters
 
 Before launching Indexcast you must configure application providing parameters below:

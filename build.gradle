@@ -20,7 +20,7 @@ apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 apply plugin: 'com.palantir.docker'
 
-group = 'cz.mzk'
+group = 'com.indexcast'
 version = '1.0.0'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
