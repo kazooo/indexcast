@@ -53,19 +53,19 @@ public class SrcSolrCursorReader implements ItemReader<Pair<String, Integer>> {
     @Override
     public Pair<String, Integer> read() {
         SolrQuery query = generateQueryFromCursor(lastCursorMark);
-        Pair<String, Integer> cursorAndNumFound = solrClient.queryCursorAndNumFound(query);
-        String nextCursorMark = cursorAndNumFound.getKey();
+        Pair<String, Integer> nextCursorAndDocsToMigrate = solrClient.queryCursorAndDocsToMigrate(query);
+        String nextCursorMark = nextCursorAndDocsToMigrate.getKey();
 
         if (nextCursorMark.equals(lastCursorMark)) { // no more cursors, end of index
             cursorStorage.close();
             logger.debug("[cursor-reader][finish] reach the end of index, close cursor mark storage");
-            return null;
+            return null;  // null from Spring Batch reader means the end of job
         } else {
             logger.debug("[cursor-reader][read] " + lastCursorMark);
-            int docsPart = Math.min(toolConfiguration.getDocsPerCycle(), cursorAndNumFound.getValue());
-            Pair<String, Integer> pair = new Pair<>(lastCursorMark, docsPart);
+            int docsPart = Math.min(toolConfiguration.getDocsPerCycle(), nextCursorAndDocsToMigrate.getValue());
+            Pair<String, Integer> cursorAndDocsToMigrate = new Pair<>(lastCursorMark, docsPart);
             lastCursorMark = nextCursorMark;
-            return pair;
+            return cursorAndDocsToMigrate;
         }
     }
 

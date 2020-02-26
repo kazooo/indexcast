@@ -44,7 +44,7 @@ public class SrcSolrCursorReaderTest {
     @Test
     public void testReadCursor() {
         setupMocks();
-        when(solrClient.queryCursorAndNumFound(any(SolrQuery.class)))
+        when(solrClient.queryCursorAndDocsToMigrate(any(SolrQuery.class)))
                 .thenReturn(new Pair<>("cursor", 5000));
         Pair<String, Integer> response = reader.read();
         assertNotNull(response);
@@ -55,7 +55,7 @@ public class SrcSolrCursorReaderTest {
     @Test
     public void testGotNull() {
         setupMocks();
-        when(solrClient.queryCursorAndNumFound(any(SolrQuery.class)))
+        when(solrClient.queryCursorAndDocsToMigrate(any(SolrQuery.class)))
                 .thenReturn(new Pair<>("*", 0));
         Pair<String, Integer> response = reader.read();
         assertNull(response);

@@ -19,7 +19,7 @@ public class SrcSolrClient extends SolrClientWrapper {
     @Autowired
     public SrcSolrClient(@Value("#{indexcastParameterConfiguration.srcSolrHost}") String srcSolrHost,
                          @Value("#{indexcastParameterConfiguration.srcCoreName}") String coreName) {
-        super(srcSolrHost, coreName);
+        super(srcSolrHost, coreName, 60000);
     }
 
     @PreDestroy

@@ -5,9 +5,11 @@ import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.client.solrj.response.SolrPingResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
+import org.apache.solr.common.util.NamedList;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,11 +17,12 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SolrClientWrapperTest {
@@ -31,14 +34,15 @@ public class SolrClientWrapperTest {
     QueryResponse response;
 
     private SolrClientWrapper wrapper;
+    private int solrWaitIfFailed = 3000;
 
     @Before
     public void setup() {
-        wrapper = new SolrClientWrapper("no_host", "test-core");
+        wrapper = new SolrClientWrapper("no_host", "test-core", solrWaitIfFailed);
         wrapper.setupCustomSolrClient(mockSolrClient);
     }
 
-    @Test
+    @Test(timeout = 1000)
     public void testSuccessfulQueryWithCursor() throws IOException, SolrServerException {
         SolrDocumentList fakeList = createFakeSolrDocList();
         when(response.getResults()).thenReturn(fakeList);
@@ -51,41 +55,42 @@ public class SolrClientWrapperTest {
     }
 
     @Test
-    public void testFailedQueryWithCursor() throws IOException, SolrServerException {
+    public void testFailedQueryWithCursorWaiting() throws IOException, SolrServerException, InterruptedException {
         when(mockSolrClient.query(any(String.class), any(SolrQuery.class)))
                 .thenThrow(SolrServerException.class);
-        assertNull(wrapper.queryWithCursor(new SolrQuery()));
+        threadWaitingSuccessfully(() -> wrapper.queryWithCursor(new SolrQuery()));
     }
 
-    @Test
+    @Test(timeout = 1000)
     public void testSuccessfulQueryCursorAndNumFound() throws IOException, SolrServerException {
         SolrDocumentList fakeList = createFakeSolrDocList();
         when(response.getResults()).thenReturn(fakeList);
         when(response.getNextCursorMark()).thenReturn("cursor");
         when(mockSolrClient.query(any(String.class), any(SolrQuery.class)))
                 .thenReturn(response);
-        Pair<String, Integer> wrapperResponse = wrapper.queryCursorAndNumFound(new SolrQuery());
+        Pair<String, Integer> wrapperResponse = wrapper.queryCursorAndDocsToMigrate(new SolrQuery());
         assertEquals(wrapperResponse.getKey(), "cursor");
         assertEquals(2, (int) wrapperResponse.getValue());
     }
 
     @Test
-    public void testFailedQueryCursorAndNumFound() throws IOException, SolrServerException {
+    public void testFailedQueryCursorAndDocsToMigrateWaiting()
+            throws InterruptedException, IOException, SolrServerException {
         when(mockSolrClient.query(any(String.class), any(SolrQuery.class)))
                 .thenThrow(SolrServerException.class);
-        assertNull(wrapper.queryCursorAndNumFound(new SolrQuery()));
+        threadWaitingSuccessfully(() -> wrapper.queryCursorAndDocsToMigrate(new SolrQuery()));
     }
 
-    @Test
+    @Test(timeout = 1000)
     public void testSuccessfulIndex() {
-        assertTrue(wrapper.index(new SolrInputDocument()));
+        wrapper.index(new SolrInputDocument());
     }
 
     @Test
-    public void testFailedIndex() throws IOException, SolrServerException {
+    public void testFailedIndexWaiting() throws IOException, SolrServerException, InterruptedException {
         when(mockSolrClient.add(any(String.class), any(SolrInputDocument.class)))
                 .thenThrow(SolrServerException.class);
-        assertFalse(wrapper.index(new SolrInputDocument()));
+        threadWaitingSuccessfully(() -> wrapper.index(new SolrInputDocument()));
     }
 
     @Test
@@ -110,6 +115,19 @@ public class SolrClientWrapperTest {
         wrapper.close();
     }
 
+    @Test
+    public void testOkPing() throws IOException, SolrServerException, InterruptedException {
+        when(mockSolrClient.add(any(String.class), any(SolrInputDocument.class)))
+                .thenThrow(SolrServerException.class);
+        SolrPingResponse pingResponse = new SolrPingResponse();
+        NamedList<Object> status = new NamedList<>(new HashMap<String, Integer>() {{
+            put("status", 0);
+        }});
+        pingResponse.setResponse(status);
+        when(mockSolrClient.ping(any())).thenReturn(pingResponse);
+        threadWaitingSuccessfully(() -> wrapper.index(new SolrInputDocument()));
+    }
+
     private SolrDocumentList createFakeSolrDocList() {
         SolrDocumentList docs = new SolrDocumentList();
         docs.add(createDoc());
@@ -123,5 +141,14 @@ public class SolrClientWrapperTest {
         doc.addField("PID", "doc_pid");
         doc.addField("root", "doc_root");
         return doc;
+    }
+
+    private void threadWaitingSuccessfully(Runnable target) throws InterruptedException {
+        Thread t = new Thread(target);
+        t.start();
+        Thread.sleep(solrWaitIfFailed + 1000); // wait to coverage waitForConnection
+        assertTrue(t.isAlive());
+        Thread.sleep(1000); // to trigger InterruptedException
+        t.interrupt();
     }
 }

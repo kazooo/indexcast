@@ -6,6 +6,7 @@ import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.client.solrj.response.SolrPingResponse;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
 import org.slf4j.Logger;
@@ -23,11 +24,15 @@ import java.io.IOException;
 public class SolrClientWrapper {
 
     private SolrClient client;
+    private String solrHost;
     private String coreName;
+    private int waitMillisecondsIfFailed;
     private final Logger logger = LoggerFactory.getLogger(SolrClientWrapper.class);
 
-    public SolrClientWrapper(String url, String coreName) {
+    public SolrClientWrapper(String url, String coreName, int waitIfFailed) {
         this.coreName = coreName;
+        this.solrHost = url;
+        this.waitMillisecondsIfFailed = waitIfFailed;
         client = new HttpSolrClient.Builder(url)
                 .withConnectionTimeout(10000)
                 .withSocketTimeout(60000)
@@ -38,38 +43,42 @@ public class SolrClientWrapper {
         this.client = client;
     }
 
+    public Pair<String, Integer> queryCursorAndDocsToMigrate(SolrQuery query) {
+        while (true) {
+            try {
+                QueryResponse response = client.query(coreName, query);
+                return new Pair<>(response.getNextCursorMark(), response.getResults().size());
+            } catch (SolrServerException | IOException e) {
+                logger.error("Can't request source Solr index at " + solrHost + " for a cursor!");
+                e.printStackTrace();
+                pingSolrAndWait();
+            }
+        }
+    }
+
     public Pair<String, SolrDocumentList> queryWithCursor(SolrQuery query) {
-        final QueryResponse response;
-        try {
-            response = client.query(coreName, query);
-            return new Pair<>(response.getNextCursorMark(), response.getResults());
-        } catch (SolrServerException | IOException e) {
-            logger.error("Can't request source Solr index for a cursor!");
-            e.printStackTrace();
+        while (true) {
+            try {
+                QueryResponse response = client.query(coreName, query);
+                return new Pair<>(response.getNextCursorMark(), response.getResults());
+            } catch (SolrServerException | IOException e) {
+                logger.error("Can't request source Solr index at " + solrHost + " for a cursor!");
+                e.printStackTrace();
+                pingSolrAndWait();
+            }
         }
-        return null;
     }
 
-    public Pair<String, Integer> queryCursorAndNumFound(SolrQuery query) {
-        final QueryResponse response;
-        try {
-            response = client.query(coreName, query);
-            return new Pair<>(response.getNextCursorMark(), response.getResults().size());
-        } catch (SolrServerException | IOException e) {
-            logger.error("Can't request source Solr index for a cursor!");
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public boolean index(SolrInputDocument doc) {
-        try {
-            client.add(coreName, doc);
-            return true;
-        } catch (SolrServerException | IOException e) {
-            logger.error("Can't index document!");
-            e.printStackTrace();
-            return false;
+    public void index(SolrInputDocument doc) {
+        while (true) {
+            try {
+                client.add(coreName, doc);
+                return;
+            } catch (SolrServerException | IOException e) {
+                logger.error("Can't index document at " + solrHost + "!");
+                e.printStackTrace();
+                pingSolrAndWait();
+            }
         }
     }
 
@@ -77,7 +86,7 @@ public class SolrClientWrapper {
         try {
             client.commit(coreName);
         } catch (SolrServerException | IOException e) {
-            logger.error("Can't commit changes!");
+            logger.error("Can't commit changes at " + solrHost + "!");
             e.printStackTrace();
         }
     }
@@ -86,7 +95,32 @@ public class SolrClientWrapper {
         try {
             client.close();
         } catch (IOException e) {
-            logger.error("Can't close connection with Solr instance!");
+            logger.error("Can't close connection with Solr at " + solrHost + "!");
+            e.printStackTrace();
+        }
+    }
+
+    private void pingSolrAndWait() {
+        while (true) {
+            try {
+                SolrPingResponse pingResponse = client.ping(coreName);
+                int status = pingResponse.getStatus();
+                logger.warn("Solr at " + solrHost + " returns ping status " + status +
+                        ". Retry operation after " + (waitMillisecondsIfFailed/1000) + " second(s)...");
+                waitSomeMilliseconds();
+                return;
+            } catch (NullPointerException | SolrServerException | IOException e) {
+                logger.warn("Lost connection with " + solrHost +
+                        "! Check ping status again after " + (waitMillisecondsIfFailed/1000) + " second(s)...");
+                waitSomeMilliseconds();
+            }
+        }
+    }
+
+    private void waitSomeMilliseconds() {
+        try {
+            Thread.sleep(waitMillisecondsIfFailed);
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }

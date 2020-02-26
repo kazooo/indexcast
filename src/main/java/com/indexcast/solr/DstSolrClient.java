@@ -19,7 +19,7 @@ public class DstSolrClient extends SolrClientWrapper {
     @Autowired
     public DstSolrClient(@Value("#{indexcastParameterConfiguration.dstSolrHost}") String dstSolrHost,
                          @Value("#{indexcastParameterConfiguration.dstCoreName}") String coreName) {
-        super(dstSolrHost, coreName);
+        super(dstSolrHost, coreName, 60000);
     }
 
     @PreDestroy
