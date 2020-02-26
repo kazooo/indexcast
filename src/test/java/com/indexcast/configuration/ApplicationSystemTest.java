@@ -7,8 +7,11 @@ import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
 import org.apache.solr.client.solrj.request.CoreAdminRequest;
 import org.apache.solr.client.solrj.response.CoreAdminResponse;
+import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.client.solrj.response.UpdateResponse;
 import org.apache.solr.common.SolrInputDocument;
 import org.apache.solr.common.params.CoreAdminParams;
+import org.apache.solr.common.params.SolrParams;
 import org.apache.solr.common.util.NamedList;
 import org.apache.solr.common.util.SimpleOrderedMap;
 import org.apache.solr.core.CoreContainer;
@@ -35,18 +38,21 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
         "DST_CORE_NAME=solr/test_core", //
         "SRC_SOLR_HOST=no_host",        // unnecessary properties, only for parameter configuration filling
         "DST_SOLR_HOST=no_host",        //
+        "WAIT_IF_SOLR_FAIL=500",        //
         "SCHEMA_PATH=src/test/resources/migration-test-schema.yml"
 })
-public class ApplicationIntegrationTest {
+public class ApplicationSystemTest {
 
-    static EmbeddedSolrServer srcSolrServer;
-    static EmbeddedSolrServer dstSolrServer;
+    static UnstableSolrServer srcSolrServer;
+    static UnstableSolrServer dstSolrServer;
+    private static int waitIfSolrFail = 500;
     static String srcCoreName = "test_src_core";
     static String dstCoreName = "test_dst_core";
     private static int docNum = 321;
 
     @Test
     public void testApplicationWorkResults() throws IOException, SolrServerException {
+        dstSolrServer.setAvoidException(true);
         int dstNumFound = (int) dstSolrServer.query(new SolrQuery("*:*")).getResults().getNumFound();
         assertEquals(docNum, dstNumFound);
     }
@@ -70,13 +76,13 @@ public class ApplicationIntegrationTest {
         public SrcSolrClient srcSolrClient() throws IOException, SolrServerException {
             CoreContainer srcContainer = new CoreContainer("src/test/resources/src_solr");
             srcContainer.load();
-            srcSolrServer = new EmbeddedSolrServer(srcContainer, srcCoreName);
+            srcSolrServer = new UnstableSolrServer(srcContainer, srcCoreName);
 
             srcSolrServer.deleteByQuery("*:*");
             srcSolrServer.commit();
             fillSrcSolr(docNum);
 
-            SrcSolrClient client = new SrcSolrClient("no_host", srcCoreName);
+            SrcSolrClient client = new SrcSolrClient("no_host", srcCoreName, waitIfSolrFail);
             client.setupCustomSolrClient(srcSolrServer);
             return client;
         }
@@ -85,17 +91,18 @@ public class ApplicationIntegrationTest {
         public DstSolrClient dstSolrClient() throws IOException, SolrServerException {
             CoreContainer dstContainer = new CoreContainer("src/test/resources/dst_solr");
             dstContainer.load();
-            dstSolrServer = new EmbeddedSolrServer(dstContainer, dstCoreName);
+            dstSolrServer = new UnstableSolrServer(dstContainer, dstCoreName);
 
             dstSolrServer.deleteByQuery("*:*");
             dstSolrServer.commit();
 
-            DstSolrClient client = new DstSolrClient("no_host", dstCoreName);
+            DstSolrClient client = new DstSolrClient("no_host", dstCoreName, waitIfSolrFail);
             client.setupCustomSolrClient(dstSolrServer);
             return client;
         }
 
         private void fillSrcSolr(int docNum) throws IOException, SolrServerException {
+            srcSolrServer.setAvoidException(true);
             for (int i = 0; i < docNum; i++) {
                 SolrInputDocument doc = new SolrInputDocument();
                 doc.addField("id", generateRandomAlphanumericString());
@@ -103,6 +110,7 @@ public class ApplicationIntegrationTest {
                 srcSolrServer.add(doc);
             }
             srcSolrServer.commit();
+            srcSolrServer.setAvoidException(false);
         }
 
         public String generateRandomAlphanumericString() {
@@ -117,5 +125,47 @@ public class ApplicationIntegrationTest {
                     .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                     .toString();
         }
+    }
+}
+
+class UnstableSolrServer extends EmbeddedSolrServer {
+
+    private Random r;
+    private int min;
+    private int max;
+    private boolean avoidException;
+
+    public UnstableSolrServer(CoreContainer coreContainer, String coreName) {
+        super(coreContainer, coreName);
+        r = new Random();
+        min = 0;
+        max = 100;
+    }
+
+    @Override
+    public QueryResponse query(String collection, SolrParams params) throws SolrServerException, IOException {
+        if (doNormally() || avoidException) {
+            return super.query(collection, params);
+        } else {
+            throw new SolrServerException("test exception");
+        }
+    }
+
+    @Override
+    public UpdateResponse add(String collection, SolrInputDocument doc) throws SolrServerException, IOException {
+        if (doNormally() || avoidException) {
+            return super.add(collection, doc);
+        } else {
+            throw new SolrServerException("test exception");
+        }
+    }
+
+    public void setAvoidException(boolean avoid) {
+        avoidException = avoid;
+    }
+
+    private boolean doNormally() {
+        int randomInt = r.nextInt((max - min) + 1) + min;
+        return randomInt > max/2;
     }
 }

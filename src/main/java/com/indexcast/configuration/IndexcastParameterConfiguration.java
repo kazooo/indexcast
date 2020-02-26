@@ -111,4 +111,8 @@ public class IndexcastParameterConfiguration {
     public String getUniqKey() {
         return migrationYAMLSchema.getUniqueKey();
     }
+
+    public int getWaitMillisIfSolrFail() {
+        return waitMillisIfSolrFail;
+    }
 }

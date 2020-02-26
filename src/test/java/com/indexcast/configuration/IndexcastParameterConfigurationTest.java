@@ -24,7 +24,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
         "DST_CORE_NAME=solr/dst_test",
         "SRC_SOLR_HOST=no_host",
         "DST_SOLR_HOST=no_host",
-        "SCHEMA_PATH=src/test/resources/migration-test-schema.yml"
+        "SCHEMA_PATH=src/test/resources/migration-test-schema.yml",
+        "WAIT_IF_SOLR_FAIL=45000"
 })
 public class IndexcastParameterConfigurationTest {
 
@@ -43,5 +44,6 @@ public class IndexcastParameterConfigurationTest {
         assertEquals(configuration.getQuery(), "*:*");
         assertNotNull(configuration.getMigrationYAMLSchema());
         assertEquals(configuration.getProcessorClassNames(), Collections.singletonList("FakeProcessor"));
+        assertEquals(configuration.getWaitMillisIfSolrFail(), 45000);
     }
 }
