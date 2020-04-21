@@ -36,8 +36,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
         "PER_CYCLE=10",
         "SRC_CORE_NAME=solr/test_core", //
         "DST_CORE_NAME=solr/test_core", //
-        "SRC_SOLR_HOST=no_host",        // unnecessary properties, only for parameter configuration filling
-        "DST_SOLR_HOST=no_host",        //
+        "SRC_SOLR_HOST=no_host",        // unnecessary properties,
+        "DST_SOLR_HOST=no_host",        // only for parameter configuration filling
         "WAIT_IF_SOLR_FAIL=500",        //
         "SCHEMA_PATH=src/test/resources/migration-test-schema.yml"
 })

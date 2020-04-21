@@ -4,10 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrInputDocument;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -28,14 +25,23 @@ public class MigrationYAMLSchema {
     @JsonProperty(required = false)
     private List<String> processors;
 
-    private List<String> requestFields;
+    private boolean copyToTheSameFields;
+    private final List<String> requestFields;
+    private static final String allFieldsFlagStr = "all";
+    private static final List<String> ignoredFieldNames = Collections.singletonList("_version_");
 
     public MigrationYAMLSchema() {
         requestFields = new ArrayList<>();
     }
 
     public void setUpRequestFields() {
-        requestFields.addAll(fields.keySet());
+        if (fields.containsKey(allFieldsFlagStr)) {
+            copyToTheSameFields = true;
+            requestFields.add("*");
+        } else {
+            copyToTheSameFields = false;
+            requestFields.addAll(fields.keySet());
+        }
     }
 
     /**
@@ -47,12 +53,15 @@ public class MigrationYAMLSchema {
      */
     public SolrInputDocument convert(SolrDocument doc) {
         Collection<String> srcDocFieldNames = doc.getFieldNames();
-        checkDocContainsSpecifiedFields(srcDocFieldNames);
-        checkDocHasOnlySpecifiedFields(srcDocFieldNames);
+        if (!copyToTheSameFields) {
+            checkDocContainsSpecifiedFields(srcDocFieldNames);
+            checkDocHasOnlySpecifiedFields(srcDocFieldNames);
+        }
 
         SolrInputDocument inputDoc = new SolrInputDocument();
         for (String fieldName : srcDocFieldNames) {
-            String newFieldName = fields.get(fieldName);
+            if (ignoredFieldNames.contains(fieldName)) continue;
+            String newFieldName = copyToTheSameFields ? fieldName : fields.get(fieldName);
             inputDoc.addField(newFieldName, doc.getFieldValue(fieldName));
         }
         return inputDoc;
@@ -69,7 +78,7 @@ public class MigrationYAMLSchema {
 
     private void checkDocHasOnlySpecifiedFields(Collection<String> srcDocFieldNames) {
         for (String fieldName : srcDocFieldNames) {
-            if (!fields.containsKey(fieldName)) {
+            if (!fields.containsKey(fieldName) && !ignoredFieldNames.contains(fieldName)) {
                 throw new IllegalStateException("Solr document contains field \""
                         + fieldName + "\" not specified in migration schema!");
             }

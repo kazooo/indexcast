@@ -1,0 +1,7 @@
+uniqueKey: id
+
+fields:
+  all : same
+
+processors:
+  - FakeProcessor
