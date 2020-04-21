@@ -14,4 +14,4 @@ services:
       - SRC_CORE_NAME=solr/test_src_core
       - DST_SOLR_HOST=http://localhost:8984
       - DST_CORE_NAME=solr/test_dst_core
-      - LOGGING_LEVEL_CZ_MZK=DEBUG
+      - LOGGING_LEVEL_COM_INDEXCAST=DEBUG

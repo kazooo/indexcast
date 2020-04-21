@@ -9,13 +9,13 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class TestProcessorTest {
+public class TestDebugLoggingProcessorTest {
 
-    private TestProcessor processor;
+    private DebugLoggingProcessor processor;
 
     @Before
     public void init() {
-        processor = new TestProcessor();
+        processor = new DebugLoggingProcessor();
     }
 
     @Test

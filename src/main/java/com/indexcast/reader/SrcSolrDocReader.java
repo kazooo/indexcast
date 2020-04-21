@@ -76,7 +76,7 @@ public class SrcSolrDocReader implements ItemReader<List<SolrInputDocument>> {
             done = 0;
             lastCursorMark = cursorWithMaxObj.getKey();
             maxObjects = cursorWithMaxObj.getValue();
-            logger.debug("[doc-reader][got] " + lastCursorMark + " " + maxObjects);
+            logger.debug("[doc-reader][read] " + lastCursorMark + " " + maxObjects);
         }
 
         SolrQuery query = generateQueryFromCursor(lastCursorMark);

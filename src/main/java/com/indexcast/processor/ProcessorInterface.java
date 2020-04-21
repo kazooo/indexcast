@@ -14,5 +14,5 @@ import java.util.List;
  */
 
 public interface ProcessorInterface extends ItemProcessor<List<SolrInputDocument>, List<SolrInputDocument>> {
-    List<SolrInputDocument> process(List<SolrInputDocument> item);
+    List<SolrInputDocument> process(List<SolrInputDocument> inputDocs);
 }

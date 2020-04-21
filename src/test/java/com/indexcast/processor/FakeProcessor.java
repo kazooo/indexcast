@@ -9,7 +9,7 @@ import java.util.List;
 
 public class FakeProcessor implements ProcessorInterface {
 
-    private final Logger logger = LoggerFactory.getLogger(TestProcessor.class);
+    private final Logger logger = LoggerFactory.getLogger(FakeProcessor.class);
 
     @Override
     public List<SolrInputDocument> process(List<SolrInputDocument> item) {
