@@ -4,4 +4,4 @@ ARG DEPENDENCY=docker/dependency
 COPY ${DEPENDENCY}/BOOT-INF/lib /indexcast/lib
 COPY ${DEPENDENCY}/META-INF /indexcast/META-INF
 COPY ${DEPENDENCY}/BOOT-INF/classes /indexcast
-ENTRYPOINT ["java","-cp","indexcast:indexcast/lib/*","cz.mzk.IndexcastApplication"]
+ENTRYPOINT ["java","-cp","indexcast:indexcast/lib/*","com.indexcast.IndexcastApplication"]

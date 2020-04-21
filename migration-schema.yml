@@ -5,4 +5,4 @@ fields:
   text : transformed_text
 
 processors:
-  - TextTransformationProcessor
+  - DebugLoggingProcessor
