@@ -19,13 +19,13 @@ import java.util.Map;
 
 public class MigrationYAMLSchema {
 
-    @JsonProperty(required = true)
+    @JsonProperty(value = "unique_key", required = true)
     private String uniqueKey;
 
     @JsonProperty(required = false)
     private Map<String, String> fields;
 
-    @JsonProperty(required = false)
+    @JsonProperty(value = "ignored_fields", required = false)
     private List<String> ignoredFields;
 
     @JsonProperty(required = false)

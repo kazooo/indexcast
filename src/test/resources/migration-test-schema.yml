@@ -1,4 +1,4 @@
-uniqueKey: id
+unique_key: id
 
 fields:
   id : id

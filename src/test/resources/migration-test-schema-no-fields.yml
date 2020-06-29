@@ -1,6 +1,6 @@
-uniqueKey: id
+unique_key: id
 
-ignoredFields:
+ignored_fields:
   - version
 
 processors:
