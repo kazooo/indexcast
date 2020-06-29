@@ -1,9 +1,9 @@
 package com.indexcast.configuration;
 
 import com.indexcast.processor.ProcessorInterface;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.solr.common.SolrInputDocument;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.support.CompositeItemProcessor;
 import org.springframework.stereotype.Component;
 
@@ -24,15 +24,12 @@ import java.util.List;
  */
 
 @Component
+@Slf4j
+@AllArgsConstructor
 public class ProcessorAutoComposer {
 
     private final IndexcastParameterConfiguration toolConfiguration;
     private final String packageName = "com.indexcast.processor";
-    private final Logger logger = LoggerFactory.getLogger(ProcessorAutoComposer.class);
-
-    public ProcessorAutoComposer(IndexcastParameterConfiguration toolConfiguration) {
-        this.toolConfiguration = toolConfiguration;
-    }
 
     public CompositeItemProcessor<List<SolrInputDocument>, List<SolrInputDocument>> composite() {
         List<String> processorNames = toolConfiguration.getProcessorClassNames();
@@ -49,7 +46,7 @@ public class ProcessorAutoComposer {
             compositeProcessor.setDelegates(processors);
         } catch (IOException | ClassNotFoundException | InstantiationException | ClassCastException |
                 InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
-            logger.error("Can't initialize custom processors!");
+            log.error("Can't initialize custom processors!");
             e.printStackTrace();
             return null;
         }

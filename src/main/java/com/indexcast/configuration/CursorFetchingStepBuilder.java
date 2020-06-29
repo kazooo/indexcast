@@ -5,6 +5,7 @@ import com.indexcast.component.CursorMarkGlobalStorage;
 import com.indexcast.reader.SrcSolrCursorReader;
 import com.indexcast.solr.SrcSolrClient;
 import com.indexcast.writer.CursorStorageWriter;
+import lombok.AllArgsConstructor;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.item.ItemReader;
@@ -19,22 +20,13 @@ import org.springframework.context.annotation.Configuration;
  */
 
 @Configuration
+@AllArgsConstructor
 public class CursorFetchingStepBuilder {
 
     private final StepBuilderFactory stepBuilderFactory;
     private final IndexcastParameterConfiguration toolParameterConfiguration;
     private final CursorMarkGlobalStorage cursorMarkGlobalStorage;
     private final SrcSolrClient solrClient;
-
-    public CursorFetchingStepBuilder(IndexcastParameterConfiguration toolParameterConfiguration,
-                                     CursorMarkGlobalStorage cursorMarkGlobalStorage,
-                                     StepBuilderFactory stepBuilderFactory,
-                                     SrcSolrClient solrClient) {
-        this.stepBuilderFactory = stepBuilderFactory;
-        this.toolParameterConfiguration = toolParameterConfiguration;
-        this.cursorMarkGlobalStorage = cursorMarkGlobalStorage;
-        this.solrClient = solrClient;
-    }
 
     public Step build(String name) {
         // until reader can fetch cursors and doesnt return null, job can run in infinite loop

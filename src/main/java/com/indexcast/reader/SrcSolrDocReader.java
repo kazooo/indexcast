@@ -5,13 +5,12 @@ import com.indexcast.component.Pair;
 import com.indexcast.solr.SrcSolrClient;
 import com.indexcast.configuration.IndexcastParameterConfiguration;
 import com.indexcast.component.MigrationYAMLSchema;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
 import org.apache.solr.common.params.CursorMarkParams;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemReader;
 
 import java.util.ArrayList;
@@ -27,21 +26,20 @@ import java.util.List;
  * @author Aleksei Ermak
  */
 
+@Slf4j
 public class SrcSolrDocReader implements ItemReader<List<SolrInputDocument>> {
 
-    private SrcSolrClient solrClient;
-    private CursorMarkGlobalStorage cursorStorage;
+    private final SrcSolrClient solrClient;
+    private final CursorMarkGlobalStorage cursorStorage;
 
+    private final int defaultDocsPerRequest;
     private String lastCursorMark;
-    private int defaultDocsPerRequest;
     private int maxObjects;
     private int done;
 
-    private String uniqKey;
-    private String queryStr;
-    private MigrationYAMLSchema schema;
-
-    private final Logger logger = LoggerFactory.getLogger(SrcSolrDocReader.class);
+    private final String uniqKey;
+    private final String queryStr;
+    private final MigrationYAMLSchema schema;
 
     /**
      * Cursor reader constructor. Set initial cursor value at null to start fetching new part.
@@ -70,13 +68,13 @@ public class SrcSolrDocReader implements ItemReader<List<SolrInputDocument>> {
         if (lastCursorMark == null || done >= maxObjects) {
             Pair<String, Integer> cursorWithMaxObj = cursorStorage.getNextCursorAndObjNum();
             if (cursorWithMaxObj == null) {
-                logger.debug("[doc-reader][finish] storage contains no cursor marks");
+                log.debug("[doc-reader][finish] storage contains no cursor marks");
                 return null;
             }
             done = 0;
             lastCursorMark = cursorWithMaxObj.getKey();
             maxObjects = cursorWithMaxObj.getValue();
-            logger.debug("[doc-reader][read] " + lastCursorMark + " " + maxObjects);
+            log.debug("[doc-reader][read] " + lastCursorMark + " " + maxObjects);
         }
 
         SolrQuery query = generateQueryFromCursor(lastCursorMark);

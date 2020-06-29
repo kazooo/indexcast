@@ -1,7 +1,6 @@
 package com.indexcast.component;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -15,11 +14,11 @@ import java.util.*;
  */
 
 @Component
+@Slf4j
 public class CursorMarkGlobalStorage {
 
     private boolean noMoreCursors;
     private final List<Pair<String, Integer>> cursorMarksWithObjectsCount;
-    private final Logger logger = LoggerFactory.getLogger(CursorMarkGlobalStorage.class);
 
     public CursorMarkGlobalStorage() {
         noMoreCursors = false;
@@ -34,7 +33,7 @@ public class CursorMarkGlobalStorage {
      */
     public void addCursorAndObjNum(String cursorMark, Integer objNum) {
         synchronized (cursorMarksWithObjectsCount) {
-            logger.debug("[store] " + cursorMark);
+            log.debug("[store] " + cursorMark);
             cursorMarksWithObjectsCount.add(new Pair<>(cursorMark, objNum));
         }
     }
@@ -54,7 +53,7 @@ public class CursorMarkGlobalStorage {
             return null;
         }
         Pair<String, Integer> cursorWithMaxObj = cursorMarksWithObjectsCount.remove(0);
-        logger.debug("[return] " + cursorWithMaxObj.getKey());
+        log.debug("[return] " + cursorWithMaxObj.getKey());
         return cursorWithMaxObj;
     }
 
@@ -63,7 +62,7 @@ public class CursorMarkGlobalStorage {
     }
 
     public boolean isClosed() {
-        logger.debug("[storage is closed] " + noMoreCursors);
+        log.debug("[storage is closed] " + noMoreCursors);
         return noMoreCursors;
     }
 
@@ -74,7 +73,7 @@ public class CursorMarkGlobalStorage {
         try {
             Thread.sleep(3000); // sleep 3 sec
         } catch (InterruptedException e) {
-            logger.warn("Waiting for a cursor mark failed...");
+            log.warn("Waiting for a cursor mark failed...");
         }
     }
 }

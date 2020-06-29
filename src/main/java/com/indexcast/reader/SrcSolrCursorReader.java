@@ -4,10 +4,9 @@ import com.indexcast.component.CursorMarkGlobalStorage;
 import com.indexcast.component.Pair;
 import com.indexcast.solr.SrcSolrClient;
 import com.indexcast.configuration.IndexcastParameterConfiguration;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.common.params.CursorMarkParams;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemReader;
 
 
@@ -18,14 +17,13 @@ import org.springframework.batch.item.ItemReader;
  * @author Aleksei Ermak
  */
 
+@Slf4j
 public class SrcSolrCursorReader implements ItemReader<Pair<String, Integer>> {
 
-    IndexcastParameterConfiguration toolConfiguration;
-    CursorMarkGlobalStorage cursorStorage;
-    SrcSolrClient solrClient;
-
+    private final IndexcastParameterConfiguration toolConfiguration;
+    private final CursorMarkGlobalStorage cursorStorage;
+    private final SrcSolrClient solrClient;
     private String lastCursorMark;
-    private final Logger logger = LoggerFactory.getLogger(SrcSolrCursorReader.class);
 
     /**
      * Cursor reader constructor. Set initial cursor value at "*" as start cursor mark.
@@ -58,10 +56,10 @@ public class SrcSolrCursorReader implements ItemReader<Pair<String, Integer>> {
 
         if (nextCursorMark.equals(lastCursorMark)) { // no more cursors, end of index
             cursorStorage.close();
-            logger.debug("[cursor-reader][finish] reach the end of index, close cursor mark storage");
+            log.debug("[cursor-reader][finish] reach the end of index, close cursor mark storage");
             return null;  // null from Spring Batch reader means the end of job
         } else {
-            logger.debug("[cursor-reader][read] " + lastCursorMark);
+            log.debug("[cursor-reader][read] " + lastCursorMark);
             int docsPart = Math.min(toolConfiguration.getDocsPerCycle(), nextCursorAndDocsToMigrate.getValue());
             Pair<String, Integer> cursorAndDocsToMigrate = new Pair<>(lastCursorMark, docsPart);
             lastCursorMark = nextCursorMark;

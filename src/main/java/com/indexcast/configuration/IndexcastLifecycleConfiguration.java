@@ -1,7 +1,7 @@
 package com.indexcast.configuration;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.configuration.annotation.DefaultBatchConfigurer;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -26,24 +26,14 @@ import javax.sql.DataSource;
 
 @Configuration
 @EnableBatchProcessing
+@Slf4j
+@AllArgsConstructor
 public class IndexcastLifecycleConfiguration extends DefaultBatchConfigurer {
 
     private final JobBuilderFactory jobBuilderFactory;
     private final CursorFetchingStepBuilder cursorFetchStepBuilder;
     private final MigrationStepBuilder migrationStepBuilder;
     private final IndexcastParameterConfiguration toolConfiguration;
-
-    private final Logger logger = LoggerFactory.getLogger(IndexcastLifecycleConfiguration.class);
-
-    public IndexcastLifecycleConfiguration(JobBuilderFactory jobBuilderFactory,
-                                           CursorFetchingStepBuilder cursorFetchStepBuilder,
-                                           MigrationStepBuilder migrationStepBuilder,
-                                           IndexcastParameterConfiguration toolConfiguration) {
-        this.jobBuilderFactory = jobBuilderFactory;
-        this.cursorFetchStepBuilder = cursorFetchStepBuilder;
-        this.migrationStepBuilder = migrationStepBuilder;
-        this.toolConfiguration = toolConfiguration;
-    }
 
     @Override
     public void setDataSource(DataSource dataSource) {
@@ -70,7 +60,7 @@ public class IndexcastLifecycleConfiguration extends DefaultBatchConfigurer {
         }
 
         Flow mainFlow = flowBuilder.build();
-        logger.debug("Create " + threads + " migration flows and 1 cursor fetching flow.");
+        log.debug("Create " + threads + " migration flows and 1 cursor fetching flow.");
 
         return (jobBuilderFactory.get("parallel-solr-migration")
                 .incrementer(new RunIdIncrementer())

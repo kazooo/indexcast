@@ -33,7 +33,7 @@ public class MigrationYAMLSchemaTest {
 
     @Test
     public void testSchemaProcessors() {
-        List<String> processorNames = simpleSchema.getProcessorNames();
+        List<String> processorNames = simpleSchema.getProcessors();
         assertEquals(processorNames, Collections.singletonList("FakeProcessor"));
     }
 

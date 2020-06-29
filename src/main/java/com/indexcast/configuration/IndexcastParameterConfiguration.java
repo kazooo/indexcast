@@ -3,6 +3,7 @@ package com.indexcast.configuration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.indexcast.component.MigrationYAMLSchema;
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,6 +23,7 @@ import java.util.List;
  */
 
 @Configuration
+@Getter
 public class IndexcastParameterConfiguration {
 
     @Value("${THREADS:4}")
@@ -73,46 +75,10 @@ public class IndexcastParameterConfiguration {
     }
 
     public List<String> getProcessorClassNames() {
-        return migrationYAMLSchema.getProcessorNames();
-    }
-
-    public int getThreads() {
-        return threads;
-    }
-
-    public int getDocsPerCycle() {
-        return docsPerCycle;
-    }
-
-    public String getDstSolrHost() {
-        return dstSolrHost;
-    }
-
-    public String getSrcSolrHost() {
-        return srcSolrHost;
-    }
-
-    public String getQuery() {
-        return query;
-    }
-
-    public MigrationYAMLSchema getMigrationYAMLSchema() {
-        return migrationYAMLSchema;
-    }
-
-    public String getDstCoreName() {
-        return dstCoreName;
-    }
-
-    public String getSrcCoreName() {
-        return srcCoreName;
+        return migrationYAMLSchema.getProcessors();
     }
 
     public String getUniqKey() {
         return migrationYAMLSchema.getUniqueKey();
-    }
-
-    public int getWaitMillisIfSolrFail() {
-        return waitMillisIfSolrFail;
     }
 }

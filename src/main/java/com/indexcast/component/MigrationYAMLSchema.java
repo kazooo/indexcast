@@ -1,6 +1,7 @@
 package com.indexcast.component;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrInputDocument;
 
@@ -19,18 +20,21 @@ import java.util.Map;
 
 public class MigrationYAMLSchema {
 
+    @Getter
     @JsonProperty(value = "unique_key", required = true)
     private String uniqueKey;
 
-    @JsonProperty(required = false)
+    @JsonProperty
     private Map<String, String> fields;
 
-    @JsonProperty(value = "ignored_fields", required = false)
+    @JsonProperty(value = "ignored_fields")
     private List<String> ignoredFields;
 
-    @JsonProperty(required = false)
+    @Getter
+    @JsonProperty
     private List<String> processors;
 
+    @Getter
     private final List<String> requestFields;
 
     public MigrationYAMLSchema() {
@@ -74,17 +78,5 @@ public class MigrationYAMLSchema {
                         + fieldName + "\" specified in migration schema!");
             }
         }
-    }
-
-    public List<String> getProcessorNames() {
-        return processors;
-    }
-
-    public List<String> getRequestFields() {
-        return requestFields;
-    }
-
-    public String getUniqueKey() {
-        return uniqueKey;
     }
 }

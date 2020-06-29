@@ -5,6 +5,7 @@ import com.indexcast.reader.SrcSolrDocReader;
 import com.indexcast.solr.DstSolrClient;
 import com.indexcast.solr.SrcSolrClient;
 import com.indexcast.writer.DstSolrDocWriter;
+import lombok.AllArgsConstructor;
 import org.apache.solr.common.SolrInputDocument;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
@@ -23,6 +24,7 @@ import java.util.List;
  */
 
 @Configuration
+@AllArgsConstructor
 public class MigrationStepBuilder {
 
     private final StepBuilderFactory stepBuilderFactory;
@@ -31,19 +33,6 @@ public class MigrationStepBuilder {
     private final CursorMarkGlobalStorage cursorMarkGlobalStorage;
     private final SrcSolrClient srcSolrClient;
     private final DstSolrClient dstSolrClient;
-
-    public MigrationStepBuilder(StepBuilderFactory stepBuilderFactory,
-                                ProcessorAutoComposer processorComposer,
-                                IndexcastParameterConfiguration toolParameterConfiguration,
-                                CursorMarkGlobalStorage cursorMarkGlobalStorage,
-                                SrcSolrClient srcSolrClient, DstSolrClient dstSolrClient) {
-        this.stepBuilderFactory = stepBuilderFactory;
-        this.processorComposer = processorComposer;
-        this.toolParameterConfiguration = toolParameterConfiguration;
-        this.cursorMarkGlobalStorage = cursorMarkGlobalStorage;
-        this.srcSolrClient = srcSolrClient;
-        this.dstSolrClient = dstSolrClient;
-    }
 
     public Step build(String name) {
         // until reader can get cursors and doesnt return null, jobs will run in infinite loop

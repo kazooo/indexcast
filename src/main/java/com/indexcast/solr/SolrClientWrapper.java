@@ -1,6 +1,7 @@
 package com.indexcast.solr;
 
 import com.indexcast.component.Pair;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -21,13 +22,13 @@ import java.io.IOException;
  * @author Aleksei Ermak
  */
 
+@Slf4j
 public class SolrClientWrapper {
 
     private SolrClient client;
-    private String solrHost;
-    private String coreName;
-    private int waitMillisecondsIfFail;
-    private final Logger logger = LoggerFactory.getLogger(SolrClientWrapper.class);
+    private final String solrHost;
+    private final String coreName;
+    private final int waitMillisecondsIfFail;
 
     public SolrClientWrapper(String url, String coreName, int waitIfFail) {
         this.coreName = coreName;
@@ -48,8 +49,8 @@ public class SolrClientWrapper {
             try {
                 QueryResponse response = client.query(coreName, query);
                 return new Pair<>(response.getNextCursorMark(), response.getResults().size());
-            } catch (SolrServerException | IOException e) {
-                logger.error("Can't request source Solr index at " + solrHost + " for a cursor!");
+            } catch (Throwable e) {
+                log.error("Can't request source Solr index at " + solrHost + " for a cursor!");
                 e.printStackTrace();
                 pingSolrAndWait();
             }
@@ -61,8 +62,8 @@ public class SolrClientWrapper {
             try {
                 QueryResponse response = client.query(coreName, query);
                 return new Pair<>(response.getNextCursorMark(), response.getResults());
-            } catch (SolrServerException | IOException e) {
-                logger.error("Can't request source Solr index at " + solrHost + " for a cursor!");
+            } catch (Throwable e) {
+                log.error("Can't request source Solr index at " + solrHost + " for a cursor!");
                 e.printStackTrace();
                 pingSolrAndWait();
             }
@@ -75,7 +76,7 @@ public class SolrClientWrapper {
                 client.add(coreName, doc);
                 return;
             } catch (SolrServerException | IOException e) {
-                logger.error("Can't index document at " + solrHost + "!");
+                log.error("Can't index document at " + solrHost + "!");
                 e.printStackTrace();
                 pingSolrAndWait();
             }
@@ -86,7 +87,7 @@ public class SolrClientWrapper {
         try {
             client.commit(coreName);
         } catch (SolrServerException | IOException e) {
-            logger.error("Can't commit changes at " + solrHost + "!");
+            log.error("Can't commit changes at " + solrHost + "!");
             e.printStackTrace();
         }
     }
@@ -95,7 +96,7 @@ public class SolrClientWrapper {
         try {
             client.close();
         } catch (IOException e) {
-            logger.error("Can't close connection with Solr at " + solrHost + "!");
+            log.error("Can't close connection with Solr at " + solrHost + "!");
             e.printStackTrace();
         }
     }
@@ -105,12 +106,12 @@ public class SolrClientWrapper {
             try {
                 SolrPingResponse pingResponse = client.ping(coreName);
                 int status = pingResponse.getStatus();
-                logger.warn("Solr at " + solrHost + " returns ping status " + status +
+                log.warn("Solr at " + solrHost + " returns ping status " + status +
                         ". Retry operation after " + (waitMillisecondsIfFail/1000) + " second(s)...");
                 waitSomeMilliseconds();
                 return;
             } catch (NullPointerException | SolrServerException | IOException e) {
-                logger.warn("Lost connection with " + solrHost +
+                log.warn("Lost connection with " + solrHost +
                         "! Check ping status again after " + (waitMillisecondsIfFail/1000) + " second(s)...");
                 waitSomeMilliseconds();
             }

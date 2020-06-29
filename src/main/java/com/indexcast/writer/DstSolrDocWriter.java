@@ -1,6 +1,8 @@
 package com.indexcast.writer;
 
 import com.indexcast.solr.DstSolrClient;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.solr.common.SolrInputDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,14 +18,11 @@ import java.util.List;
  * @author Aleksei Ermak
  */
 
+@Slf4j
+@AllArgsConstructor
 public class DstSolrDocWriter implements ItemWriter<List<SolrInputDocument>> {
 
-    private DstSolrClient solrClient;
-    private final Logger logger = LoggerFactory.getLogger(DstSolrDocWriter.class);
-
-    public DstSolrDocWriter(DstSolrClient dstSolrClient) {
-        solrClient = dstSolrClient;
-    }
+    private final DstSolrClient solrClient;
 
     @Override
     public void write(List<? extends List<SolrInputDocument>> items) {
@@ -31,7 +30,7 @@ public class DstSolrDocWriter implements ItemWriter<List<SolrInputDocument>> {
             for (SolrInputDocument doc : docs) {
                 solrClient.index(doc);
             }
-            logger.debug("[doc-writer][send] " + docs.size() + " docs");
+            log.debug("[doc-writer][send] " + docs.size() + " docs");
         }
         solrClient.commit();
     }

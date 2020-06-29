@@ -24,7 +24,7 @@ group = 'com.indexcast'
 version = '1.0.0'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
-mainClassName = 'cz.mzk.IndexcastApplication'
+mainClassName = 'com.indexcast.IndexcastApplication'
 
 repositories {
     mavenCentral()
@@ -32,12 +32,16 @@ repositories {
 }
 
 dependencies {
-    implementation group: 'org.apache.solr', name: 'solr-solrj', version: '8.4.1'
     compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: '2.10.2'
+    implementation group: 'org.apache.solr', name: 'solr-solrj', version: '8.4.1'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-batch', version: '2.2.4.RELEASE'
+    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.12'
+    annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.12'
 
     testCompile group: 'junit', name: 'junit', version: '4.13'
     testCompile group: 'org.springframework.batch', name: 'spring-batch-test', version: '4.2.1.RELEASE'
+    testCompileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.12'
+    testAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.12'
     testImplementation group: 'org.mockito', name: 'mockito-core', version: '3.2.4'
     testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.2.4.RELEASE'
     testImplementation group: 'org.apache.solr', name: 'solr-core', version: '8.4.1'
