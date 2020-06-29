@@ -1,4 +1,7 @@
 uniqueKey: id
 
+ignoredFields:
+  - version
+
 processors:
   - FakeProcessor

@@ -26,6 +26,9 @@ public class MigrationYAMLSchema {
     private Map<String, String> fields;
 
     @JsonProperty(required = false)
+    private List<String> ignoredFields;
+
+    @JsonProperty(required = false)
     private List<String> processors;
 
     private final List<String> requestFields;
@@ -53,11 +56,11 @@ public class MigrationYAMLSchema {
         Collection<String> srcDocFieldNames = doc.getFieldNames();
         if (fields != null) {
             checkDocContainsSpecifiedFields(srcDocFieldNames);
-            checkDocHasOnlySpecifiedFields(srcDocFieldNames);
         }
 
         SolrInputDocument inputDoc = new SolrInputDocument();
         for (String fieldName : srcDocFieldNames) {
+            if (ignoredFields != null && ignoredFields.contains(fieldName)) continue;
             String newFieldName = fields != null ? fields.get(fieldName) : fieldName;
             inputDoc.addField(newFieldName, doc.getFieldValue(fieldName));
         }
@@ -69,15 +72,6 @@ public class MigrationYAMLSchema {
             if (!srcDocFieldNames.contains(fieldName)) {
                 throw new IllegalStateException("Solr document doesn't have field \""
                         + fieldName + "\" specified in migration schema!");
-            }
-        }
-    }
-
-    private void checkDocHasOnlySpecifiedFields(Collection<String> srcDocFieldNames) {
-        for (String fieldName : srcDocFieldNames) {
-            if (!fields.containsKey(fieldName)) {
-                throw new IllegalStateException("Solr document contains field \""
-                        + fieldName + "\" not specified in migration schema!");
             }
         }
     }

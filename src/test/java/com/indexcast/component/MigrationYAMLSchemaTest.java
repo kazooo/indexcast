@@ -72,15 +72,6 @@ public class MigrationYAMLSchemaTest {
         assertTrue(inputDoc.getFieldNames().containsAll(Arrays.asList("id", "text")));
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void testSolrDocumentAdditionalFieldConversion() {
-        SolrDocument doc = new SolrDocument();
-        doc.addField("id", "doc_id");
-        doc.addField("title", "doc_title");
-        doc.addField("text", "doc_text");
-        simpleSchema.convert(doc);
-    }
-
     @Test
     public void testSolrDocumentAdditionalFieldConversionOK() {
         SolrDocument doc = new SolrDocument();
@@ -97,6 +88,16 @@ public class MigrationYAMLSchemaTest {
         doc.addField("id", "doc_id");
         doc.addField("title", "doc_title");
         SolrInputDocument inputDoc = simpleSchema.convert(doc);
+        assertTrue(inputDoc.getFieldNames().containsAll(Arrays.asList("id", "title")));
+    }
+
+    @Test
+    public void testSolrDocumentIgnoredFieldConversion() {
+        SolrDocument doc = new SolrDocument();
+        doc.addField("id", "doc_id");
+        doc.addField("title", "doc_title");
+        doc.addField("version", "doc_version");
+        SolrInputDocument inputDoc = noFieldsSchema.convert(doc);
         assertTrue(inputDoc.getFieldNames().containsAll(Arrays.asList("id", "title")));
     }
 }
