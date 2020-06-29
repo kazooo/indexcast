@@ -11,38 +11,47 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 
 import static org.junit.Assert.*;
 
 public class MigrationYAMLSchemaTest {
 
-    private MigrationYAMLSchema schema;
+    private MigrationYAMLSchema simpleSchema;
+    private MigrationYAMLSchema noFieldsSchema;
 
     @Before
     public void init() throws IOException {
-        File file = new File("src/test/resources/migration-test-schema.yml");
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-        schema = mapper.readValue(file, MigrationYAMLSchema.class);
-        schema.setUpRequestFields();
+        String simpleYamlConfigFilePath = "src/test/resources/migration-test-schema.yml";
+        simpleSchema = mapper.readValue(new File(simpleYamlConfigFilePath), MigrationYAMLSchema.class);
+        simpleSchema.setUpRequestFields();
+        String noFieldsYamlConfigFilePath = "src/test/resources/migration-test-schema-no-fields.yml";
+        noFieldsSchema = mapper.readValue(new File(noFieldsYamlConfigFilePath), MigrationYAMLSchema.class);
+        noFieldsSchema.setUpRequestFields();
     }
 
     @Test
     public void testSchemaProcessors() {
-        List<String> processorNames = schema.getProcessorNames();
+        List<String> processorNames = simpleSchema.getProcessorNames();
         assertEquals(processorNames, Collections.singletonList("FakeProcessor"));
     }
 
     @Test
     public void testRequestFields() {
-        List<String> fieldNames = schema.getRequestFields();
+        List<String> fieldNames = simpleSchema.getRequestFields();
         assertEquals(fieldNames, Arrays.asList("id", "title"));
     }
 
     @Test
+    public void testAllRequestFields() {
+        List<String> fieldNames = noFieldsSchema.getRequestFields();
+        assertEquals(fieldNames, Collections.singletonList("*"));
+    }
+
+    @Test
     public void testUniqueKey() {
-        String uniqueKey = schema.getUniqueKey();
+        String uniqueKey = simpleSchema.getUniqueKey();
         assertEquals(uniqueKey, "id");
     }
 
@@ -51,18 +60,26 @@ public class MigrationYAMLSchemaTest {
         SolrDocument doc = new SolrDocument();
         doc.addField("id", "doc_id");
         doc.addField("text", "doc_text");
-        doc.addField("_version_", "doc_version");
-        schema.convert(doc);
+        simpleSchema.convert(doc);
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void testSolrDocumentAdditionalFieldConversion() {
+    @Test
+    public void testSolrDocumentNonSpecifiedFieldConversionOK() {
+        SolrDocument doc = new SolrDocument();
+        doc.addField("id", "doc_id");
+        doc.addField("text", "doc_text");
+        SolrInputDocument inputDoc = noFieldsSchema.convert(doc);
+        assertTrue(inputDoc.getFieldNames().containsAll(Arrays.asList("id", "text")));
+    }
+
+    @Test
+    public void testSolrDocumentAdditionalFieldConversionOK() {
         SolrDocument doc = new SolrDocument();
         doc.addField("id", "doc_id");
         doc.addField("title", "doc_title");
         doc.addField("text", "doc_text");
-        doc.addField("_version_", "doc_version");
-        schema.convert(doc);
+        SolrInputDocument inputDoc = noFieldsSchema.convert(doc);
+        assertTrue(inputDoc.getFieldNames().containsAll(Arrays.asList("id", "title", "text")));
     }
 
     @Test
@@ -70,25 +87,17 @@ public class MigrationYAMLSchemaTest {
         SolrDocument doc = new SolrDocument();
         doc.addField("id", "doc_id");
         doc.addField("title", "doc_title");
-        doc.addField("_version_", "doc_version");
-        schema.convert(doc);
+        SolrInputDocument inputDoc = simpleSchema.convert(doc);
+        assertTrue(inputDoc.getFieldNames().containsAll(Arrays.asList("id", "title")));
     }
 
     @Test
-    public void testSolrDocumentAllFieldsSuccessfulConversion() throws IOException {
-        File file = new File("src/test/resources/migration-test-schema-all-fields.yml");
-        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-        schema = mapper.readValue(file, MigrationYAMLSchema.class);
-        schema.setUpRequestFields();
-
-        List<String> fieldNames = schema.getRequestFields();
-        assertEquals(fieldNames, Collections.singletonList("*"));
-
+    public void testSolrDocumentIgnoredFieldConversion() {
         SolrDocument doc = new SolrDocument();
         doc.addField("id", "doc_id");
-        doc.addField("text", "doc_text");
-        doc.addField("_version_", "doc_version");
-        SolrInputDocument inputDoc = schema.convert(doc);
-        assertEquals(inputDoc.keySet(), new HashSet<>(Arrays.asList("id", "text")));
+        doc.addField("title", "doc_title");
+        doc.addField("version", "doc_version");
+        SolrInputDocument inputDoc = noFieldsSchema.convert(doc);
+        assertTrue(inputDoc.getFieldNames().containsAll(Arrays.asList("id", "title")));
     }
 }

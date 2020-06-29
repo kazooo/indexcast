@@ -1,8 +1,7 @@
 unique_key: id
 
-fields:
-  id : id
-  title : title
+ignored_fields:
+  - version
 
 processors:
   - FakeProcessor
