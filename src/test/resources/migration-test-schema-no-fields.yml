@@ -1,0 +1,4 @@
+uniqueKey: id
+
+processors:
+  - FakeProcessor

@@ -22,20 +22,24 @@ public class MigrationYAMLSchema {
     @JsonProperty(required = true)
     private String uniqueKey;
 
-    @JsonProperty(required = true)
+    @JsonProperty(required = false)
     private Map<String, String> fields;
 
     @JsonProperty(required = false)
     private List<String> processors;
 
-    private List<String> requestFields;
+    private final List<String> requestFields;
 
     public MigrationYAMLSchema() {
         requestFields = new ArrayList<>();
     }
 
     public void setUpRequestFields() {
-        requestFields.addAll(fields.keySet());
+        if (fields == null) {
+            requestFields.add("*");
+        } else {
+            requestFields.addAll(fields.keySet());
+        }
     }
 
     /**
@@ -47,12 +51,14 @@ public class MigrationYAMLSchema {
      */
     public SolrInputDocument convert(SolrDocument doc) {
         Collection<String> srcDocFieldNames = doc.getFieldNames();
-        checkDocContainsSpecifiedFields(srcDocFieldNames);
-        checkDocHasOnlySpecifiedFields(srcDocFieldNames);
+        if (fields != null) {
+            checkDocContainsSpecifiedFields(srcDocFieldNames);
+            checkDocHasOnlySpecifiedFields(srcDocFieldNames);
+        }
 
         SolrInputDocument inputDoc = new SolrInputDocument();
         for (String fieldName : srcDocFieldNames) {
-            String newFieldName = fields.get(fieldName);
+            String newFieldName = fields != null ? fields.get(fieldName) : fieldName;
             inputDoc.addField(newFieldName, doc.getFieldValue(fieldName));
         }
         return inputDoc;
