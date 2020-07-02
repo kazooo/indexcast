@@ -3,12 +3,14 @@ package com.indexcast.component;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingDeque;
 
 
 /**
  * This class is used as a global synchronized storage for cursor marks
- * and document numbers for migration from this marks. Closes when has no marks, announcing the end of the migration.
+ * and document numbers for migration from this marks.
+ * Closes when has no marks, announcing the end of the migration.
  *
  * @author Aleksei Ermak
  */
@@ -18,11 +20,16 @@ import java.util.*;
 public class CursorMarkGlobalStorage {
 
     private boolean noMoreCursors;
-    private final List<Pair<String, Integer>> cursorMarksWithObjectsCount;
+    private final BlockingQueue<Pair<String, Integer>> cursorMarksWithObjectsCount;
 
     public CursorMarkGlobalStorage() {
+        cursorMarksWithObjectsCount = new LinkedBlockingDeque<>(10);
         noMoreCursors = false;
-        cursorMarksWithObjectsCount = Collections.synchronizedList(new ArrayList<>());
+    }
+
+    public CursorMarkGlobalStorage(int queueSize) {
+        cursorMarksWithObjectsCount = new LinkedBlockingDeque<>(queueSize);
+        noMoreCursors = false;
     }
 
     /**
@@ -32,9 +39,14 @@ public class CursorMarkGlobalStorage {
      * @param objNum      how many documents can be read from given cursor mark
      */
     public void addCursorAndObjNum(String cursorMark, Integer objNum) {
-        synchronized (cursorMarksWithObjectsCount) {
-            log.debug("[store] " + cursorMark);
-            cursorMarksWithObjectsCount.add(new Pair<>(cursorMark, objNum));
+        while (true) {
+            try {
+                cursorMarksWithObjectsCount.put(new Pair<>(cursorMark, objNum));
+                log.debug("[store] " + cursorMark);
+                break;
+            } catch (InterruptedException e) {
+                log.warn("Catch InterruptedException when trying to put new cursor mark to the storage!");
+            }
         }
     }
 
@@ -45,16 +57,17 @@ public class CursorMarkGlobalStorage {
      *
      * @return  cursor mark and docs-to-migrate number
      */
-    public synchronized Pair<String, Integer> getNextCursorAndObjNum() {
-        while (cursorMarksWithObjectsCount.isEmpty() && !isClosed()) {
-            waitForCursor();
+    public Pair<String, Integer> getNextCursorAndObjNum() {
+        while (!isClosed() || !cursorMarksWithObjectsCount.isEmpty()) {
+            try {
+                Pair<String, Integer> cursorWithMaxObj = cursorMarksWithObjectsCount.take();
+                log.debug("[return] " + cursorWithMaxObj.getKey());
+                return cursorWithMaxObj;
+            } catch (InterruptedException e) {
+                log.warn("Catch InterruptedException when trying to take a cursor mark from the storage!");
+            }
         }
-        if (isClosed() && cursorMarksWithObjectsCount.isEmpty()) {
-            return null;
-        }
-        Pair<String, Integer> cursorWithMaxObj = cursorMarksWithObjectsCount.remove(0);
-        log.debug("[return] " + cursorWithMaxObj.getKey());
-        return cursorWithMaxObj;
+        return null;
     }
 
     public void close() {
@@ -64,16 +77,5 @@ public class CursorMarkGlobalStorage {
     public boolean isClosed() {
         log.debug("[storage is closed] " + noMoreCursors);
         return noMoreCursors;
-    }
-
-    /**
-     * Make thread wait 3 seconds before it can check storage again.
-     */
-    private void waitForCursor() {
-        try {
-            Thread.sleep(3000); // sleep 3 sec
-        } catch (InterruptedException e) {
-            log.warn("Waiting for a cursor mark failed...");
-        }
     }
 }

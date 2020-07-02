@@ -43,12 +43,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 })
 public class ApplicationSystemTest {
 
-    static UnstableSolrServer srcSolrServer;
-    static UnstableSolrServer dstSolrServer;
-    private static int waitIfSolrFail = 500;
-    static String srcCoreName = "test_src_core";
-    static String dstCoreName = "test_dst_core";
-    private static int docNum = 321;
+    private static UnstableSolrServer srcSolrServer;
+    private static UnstableSolrServer dstSolrServer;
+    private static final String srcCoreName = "test_src_core";
+    private static final String dstCoreName = "test_dst_core";
+    private static final int waitIfSolrFail = 500;
+    private static final int docNum = 321;
 
     @Test
     public void testApplicationWorkResults() throws IOException, SolrServerException {

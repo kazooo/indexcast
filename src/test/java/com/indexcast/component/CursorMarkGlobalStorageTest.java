@@ -16,7 +16,7 @@ public class CursorMarkGlobalStorageTest {
 
     @Before
     public void setup() {
-        storage = new CursorMarkGlobalStorage();
+        storage = new CursorMarkGlobalStorage(2);
     }
 
     @Test
@@ -30,8 +30,12 @@ public class CursorMarkGlobalStorageTest {
     }
 
     @Test
-    public void testWaitingForCursor() throws InterruptedException {
-        Thread t = new Thread(() -> storage.getNextCursorAndObjNum());
+    public void testWaitingForFilling() throws InterruptedException {
+        Thread t = new Thread(() -> {
+            storage.addCursorAndObjNum("cursor", 1);
+            storage.addCursorAndObjNum("cursor", 1);
+            storage.addCursorAndObjNum("cursor", 1);
+        });
         t.start();
         Thread.sleep(4000);
         assertTrue(t.isAlive());
