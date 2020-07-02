@@ -13,7 +13,7 @@ public class CursorStorageWriterTest {
 
     @Test
     public void testWrite() {
-        CursorMarkGlobalStorage storage = new CursorMarkGlobalStorage();
+        CursorMarkGlobalStorage storage = new CursorMarkGlobalStorage(4);
         CursorStorageWriter writer = new CursorStorageWriter(storage);
         List<Pair<String, Integer>> cursors = Arrays.asList(
                 new Pair<>("cursor1", 500),

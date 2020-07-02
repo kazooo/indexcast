@@ -1,6 +1,8 @@
 package com.indexcast.component;
 
+import com.indexcast.configuration.IndexcastParameterConfiguration;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.BlockingQueue;
@@ -22,13 +24,8 @@ public class CursorMarkGlobalStorage {
     private boolean noMoreCursors;
     private final BlockingQueue<Pair<String, Integer>> cursorMarksWithObjectsCount;
 
-    public CursorMarkGlobalStorage() {
-        cursorMarksWithObjectsCount = new LinkedBlockingDeque<>(10);
-        noMoreCursors = false;
-    }
-
-    public CursorMarkGlobalStorage(int queueSize) {
-        cursorMarksWithObjectsCount = new LinkedBlockingDeque<>(queueSize);
+    public CursorMarkGlobalStorage(@Value("#{indexcastParameterConfiguration.storageSize}") int storageSize) {
+        cursorMarksWithObjectsCount = new LinkedBlockingDeque<>(storageSize);
         noMoreCursors = false;
     }
 
