@@ -7,7 +7,7 @@ import java.util.List;
 
 
 /**
- * Simple processor for debug logging.
+ * Simple processor to debug logging.
  *
  * @author Aleksei Ermak
  */
