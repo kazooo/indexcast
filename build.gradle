@@ -38,10 +38,11 @@ dependencies {
     compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.12'
     annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.12'
 
-    testCompile group: 'junit', name: 'junit', version: '4.13'
     testCompile group: 'org.springframework.batch', name: 'spring-batch-test', version: '4.2.1.RELEASE'
     testCompileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.12'
     testAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.12'
+    testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.3.1'
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.3.1'
     testImplementation group: 'org.mockito', name: 'mockito-core', version: '3.2.4'
     testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.2.4.RELEASE'
     testImplementation group: 'org.apache.solr', name: 'solr-core', version: '8.4.1'
@@ -50,6 +51,10 @@ dependencies {
 wrapper {
     gradleVersion = '6.1.1'
     distributionType = Wrapper.DistributionType.BIN
+}
+
+test {
+    useJUnitPlatform()
 }
 
 jacocoTestReport {
