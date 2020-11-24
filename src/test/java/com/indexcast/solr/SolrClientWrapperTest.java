@@ -24,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+
 @RunWith(MockitoJUnitRunner.class)
 public class SolrClientWrapperTest {
 
@@ -34,12 +35,14 @@ public class SolrClientWrapperTest {
     QueryResponse response;
 
     private SolrClientWrapper wrapper;
-    private int solrWaitIfFailed = 3000;
+    private final int solrWaitIfFailed = 3000;
 
     @Before
     public void setup() {
-        wrapper = new SolrClientWrapper("no_host", "test-core", solrWaitIfFailed);
-        wrapper.setupCustomSolrClient(mockSolrClient);
+        wrapper = new SolrClientWrapper(
+                "no_host", mockSolrClient,
+                "test-core", solrWaitIfFailed
+        );
     }
 
     @Test(timeout = 1000)

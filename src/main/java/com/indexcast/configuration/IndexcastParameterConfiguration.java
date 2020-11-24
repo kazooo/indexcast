@@ -5,7 +5,11 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.indexcast.component.MigrationYAMLSchema;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.solr.client.solrj.SolrClient;
+import org.apache.solr.client.solrj.impl.HttpSolrClient;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
@@ -82,5 +86,24 @@ public class IndexcastParameterConfiguration {
 
     public String getUniqKey() {
         return migrationYAMLSchema.getUniqueKey();
+    }
+
+    @Bean
+    @Qualifier("src_solr")
+    public SolrClient getSrcSolrClient() {
+        return configureSolrClient(srcSolrHost);
+    }
+
+    @Bean
+    @Qualifier("dst_solr")
+    public SolrClient getDstSolrClient() {
+        return configureSolrClient(dstSolrHost);
+    }
+
+    private SolrClient configureSolrClient(String url) {
+        return new HttpSolrClient.Builder(url)
+                .withConnectionTimeout(10000)
+                .withSocketTimeout(60000)
+                .build();
     }
 }

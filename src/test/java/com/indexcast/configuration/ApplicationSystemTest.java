@@ -82,9 +82,9 @@ public class ApplicationSystemTest {
             srcSolrServer.commit();
             fillSrcSolr(docNum);
 
-            SrcSolrClient client = new SrcSolrClient("no_host", srcCoreName, waitIfSolrFail);
-            client.setupCustomSolrClient(srcSolrServer);
-            return client;
+            return new SrcSolrClient(
+                    srcSolrServer, "no_host", srcCoreName, waitIfSolrFail
+            );
         }
 
         @Bean
@@ -96,9 +96,9 @@ public class ApplicationSystemTest {
             dstSolrServer.deleteByQuery("*:*");
             dstSolrServer.commit();
 
-            DstSolrClient client = new DstSolrClient("no_host", dstCoreName, waitIfSolrFail);
-            client.setupCustomSolrClient(dstSolrServer);
-            return client;
+            return new DstSolrClient(
+                    dstSolrServer, "no_host", dstCoreName, waitIfSolrFail
+            );
         }
 
         private void fillSrcSolr(int docNum) throws IOException, SolrServerException {
