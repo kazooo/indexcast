@@ -30,7 +30,7 @@ public class ProcessorAutoComposerTest {
     @Test
     public void testSuccessfulLoading() throws Exception {
         when(configuration.getProcessorClassNames()).thenReturn(Collections.singletonList("FakeProcessor"));
-        CompositeItemProcessor<List<SolrInputDocument>, List<SolrInputDocument>> processor = composer.composite();
+        CompositeItemProcessor<List<SolrInputDocument>, List<SolrInputDocument>> processor = composer.compose();
         assertNotNull(processor);
         assertTrue(processorHasBeenLoaded("com.indexcast.processor.FakeProcessor"));
     }
@@ -38,13 +38,13 @@ public class ProcessorAutoComposerTest {
     @Test
     public void testNoProcessors() {
         when(configuration.getProcessorClassNames()).thenReturn(null);
-        assertNull(composer.composite());
+        assertNull(composer.compose());
     }
 
     @Test
     public void testLoadNonProcessorClass() {
         when(configuration.getProcessorClassNames()).thenReturn(Collections.singletonList("NotAProcessor"));
-        assertNull(composer.composite());
+        assertNull(composer.compose());
     }
 
     public boolean processorHasBeenLoaded(String name) throws Exception {

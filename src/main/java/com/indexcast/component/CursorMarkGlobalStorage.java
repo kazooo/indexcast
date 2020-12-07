@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -49,22 +50,25 @@ public class CursorMarkGlobalStorage {
 
     /**
      * Retrieves cursor mark and docs-to-migrate number from storage.
-     * If any thread already in a safe zone, another threads wait for it release.
-     * If after zone release there is no more cursors and storage is closed, returns null.
+     * If a thread is already in the safe zone, other threads wait for it to be released.
+     * If there is no more cursor after zone release and storage is closed, returns null.
      *
      * @return  cursor mark and docs-to-migrate number
      */
     public Pair<String, Integer> getNextCursorAndObjNum() {
-        while (!isClosed() || !cursorMarksWithObjectsCount.isEmpty()) {
+        Pair<String, Integer> cursorWithMaxObj = null;
+        while (cursorWithMaxObj == null && (!isClosed() || !cursorMarksWithObjectsCount.isEmpty())) {
             try {
-                Pair<String, Integer> cursorWithMaxObj = cursorMarksWithObjectsCount.take();
-                log.debug("[return] " + cursorWithMaxObj.getKey());
-                return cursorWithMaxObj;
+                // returns null if storage can't give cursor mark within 10 seconds
+                cursorWithMaxObj = cursorMarksWithObjectsCount.poll(10, TimeUnit.SECONDS);
             } catch (InterruptedException e) {
-                log.warn("Catch InterruptedException when trying to take a cursor mark from the storage!");
+                log.warn("Caught InterruptedException while trying to take a cursor mark from the storage!");
             }
         }
-        return null;
+        if (cursorWithMaxObj != null) {
+            log.debug("[return] " + cursorWithMaxObj.getKey());
+        }
+        return cursorWithMaxObj;
     }
 
     public void close() {

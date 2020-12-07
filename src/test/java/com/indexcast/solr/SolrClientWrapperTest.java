@@ -3,6 +3,7 @@ package com.indexcast.solr;
 import com.indexcast.component.Pair;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.client.solrj.impl.BaseHttpSolrClient;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.response.SolrPingResponse;
@@ -24,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+
 @RunWith(MockitoJUnitRunner.class)
 public class SolrClientWrapperTest {
 
@@ -34,12 +36,14 @@ public class SolrClientWrapperTest {
     QueryResponse response;
 
     private SolrClientWrapper wrapper;
-    private int solrWaitIfFailed = 3000;
+    private final int solrWaitIfFailed = 3000;
 
     @Before
     public void setup() {
-        wrapper = new SolrClientWrapper("no_host", "test-core", solrWaitIfFailed);
-        wrapper.setupCustomSolrClient(mockSolrClient);
+        wrapper = new SolrClientWrapper(
+                "no_host", mockSolrClient,
+                "test-core", solrWaitIfFailed
+        );
     }
 
     @Test(timeout = 1000)
@@ -83,7 +87,7 @@ public class SolrClientWrapperTest {
 
     @Test(timeout = 1000)
     public void testSuccessfulIndex() {
-        wrapper.index(new SolrInputDocument());
+        assertTrue(wrapper.index(new SolrInputDocument()));
     }
 
     @Test
@@ -91,6 +95,13 @@ public class SolrClientWrapperTest {
         when(mockSolrClient.add(any(String.class), any(SolrInputDocument.class)))
                 .thenThrow(SolrServerException.class);
         threadWaitingSuccessfully(() -> wrapper.index(new SolrInputDocument()));
+    }
+
+    @Test(timeout = 1000)
+    public void testCatchRemoteError() throws IOException, SolrServerException {
+        when(mockSolrClient.add(any(String.class), any(SolrInputDocument.class)))
+                .thenThrow(BaseHttpSolrClient.RemoteSolrException.class);
+        assertFalse(wrapper.index(new SolrInputDocument()));
     }
 
     @Test

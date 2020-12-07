@@ -31,7 +31,7 @@ public class ProcessorAutoComposer {
     private final IndexcastParameterConfiguration toolConfiguration;
     private final String packageName = "com.indexcast.processor";
 
-    public CompositeItemProcessor<List<SolrInputDocument>, List<SolrInputDocument>> composite() {
+    public CompositeItemProcessor<List<SolrInputDocument>, List<SolrInputDocument>> compose() {
         List<String> processorNames = toolConfiguration.getProcessorClassNames();
         if (processorNames == null) {
             return null;             // no processors have been specified, keep migrate without them

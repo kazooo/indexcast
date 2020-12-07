@@ -1,6 +1,8 @@
 package com.indexcast.solr;
 
+import org.apache.solr.client.solrj.SolrClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -17,10 +19,11 @@ import javax.annotation.PreDestroy;
 public class SrcSolrClient extends SolrClientWrapper {
 
     @Autowired
-    public SrcSolrClient(@Value("#{indexcastParameterConfiguration.srcSolrHost}") String srcSolrHost,
+    public SrcSolrClient(@Qualifier("src_solr") SolrClient srcSolrClient,
+                         @Value("#{indexcastParameterConfiguration.srcSolrHost}") String srcSolrHost,
                          @Value("#{indexcastParameterConfiguration.srcCoreName}") String coreName,
                          @Value("#{indexcastParameterConfiguration.waitMillisIfSolrFail}") int waitIfSolrFail) {
-        super(srcSolrHost, coreName, waitIfSolrFail);
+        super(srcSolrHost, srcSolrClient, coreName, waitIfSolrFail);
     }
 
     @PreDestroy

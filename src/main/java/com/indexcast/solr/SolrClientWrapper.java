@@ -5,13 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.impl.HttpSolrClient;
+import org.apache.solr.client.solrj.impl.BaseHttpSolrClient;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.response.SolrPingResponse;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
@@ -25,23 +23,16 @@ import java.io.IOException;
 @Slf4j
 public class SolrClientWrapper {
 
-    private SolrClient client;
     private final String solrHost;
     private final String coreName;
+    private final SolrClient client;
     private final int waitMillisecondsIfFail;
 
-    public SolrClientWrapper(String url, String coreName, int waitIfFail) {
-        this.coreName = coreName;
+    public SolrClientWrapper(String url, SolrClient client, String coreName, int waitIfFail) {
         this.solrHost = url;
-        this.waitMillisecondsIfFail = waitIfFail;
-        client = new HttpSolrClient.Builder(url)
-                .withConnectionTimeout(10000)
-                .withSocketTimeout(60000)
-                .build();
-    }
-
-    public void setupCustomSolrClient(SolrClient client) {
         this.client = client;
+        this.coreName = coreName;
+        this.waitMillisecondsIfFail = waitIfFail;
     }
 
     public Pair<String, Integer> queryCursorAndDocsToMigrate(SolrQuery query) {
@@ -70,15 +61,19 @@ public class SolrClientWrapper {
         }
     }
 
-    public void index(SolrInputDocument doc) {
+    public boolean index(SolrInputDocument doc) {
         while (true) {
             try {
                 client.add(coreName, doc);
-                return;
+                return true;
             } catch (SolrServerException | IOException e) {
                 log.error("Can't index document at " + solrHost + "!");
                 e.printStackTrace();
                 pingSolrAndWait();
+            } catch (BaseHttpSolrClient.RemoteSolrException e) {
+                log.error("Can't index document at " + solrHost + " due to remote server error!");
+                e.printStackTrace();
+                return false;
             }
         }
     }
