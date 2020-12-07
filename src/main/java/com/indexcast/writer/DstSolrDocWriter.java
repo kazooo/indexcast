@@ -4,8 +4,6 @@ import com.indexcast.solr.DstSolrClient;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.solr.common.SolrInputDocument;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemWriter;
 
 import java.util.List;
@@ -26,11 +24,14 @@ public class DstSolrDocWriter implements ItemWriter<List<SolrInputDocument>> {
 
     @Override
     public void write(List<? extends List<SolrInputDocument>> items) {
+        int indexed = 0;
         for (List<SolrInputDocument> docs : items) {
             for (SolrInputDocument doc : docs) {
-                solrClient.index(doc);
+                if (solrClient.index(doc)) {
+                    indexed++;
+                }
             }
-            log.debug("[doc-writer][send] " + docs.size() + " docs");
+            log.debug("[doc-writer][indexed] " + indexed + " docs");
         }
         solrClient.commit();
     }

@@ -61,11 +61,11 @@ public class SolrClientWrapper {
         }
     }
 
-    public void index(SolrInputDocument doc) {
+    public boolean index(SolrInputDocument doc) {
         while (true) {
             try {
                 client.add(coreName, doc);
-                return;
+                return true;
             } catch (SolrServerException | IOException e) {
                 log.error("Can't index document at " + solrHost + "!");
                 e.printStackTrace();
@@ -73,7 +73,7 @@ public class SolrClientWrapper {
             } catch (BaseHttpSolrClient.RemoteSolrException e) {
                 log.error("Can't index document at " + solrHost + " due to remote server error!");
                 e.printStackTrace();
-                break;
+                return false;
             }
         }
     }

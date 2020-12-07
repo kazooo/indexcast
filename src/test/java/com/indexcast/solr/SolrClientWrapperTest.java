@@ -87,7 +87,7 @@ public class SolrClientWrapperTest {
 
     @Test(timeout = 1000)
     public void testSuccessfulIndex() {
-        wrapper.index(new SolrInputDocument());
+        assertTrue(wrapper.index(new SolrInputDocument()));
     }
 
     @Test
@@ -101,7 +101,7 @@ public class SolrClientWrapperTest {
     public void testCatchRemoteError() throws IOException, SolrServerException {
         when(mockSolrClient.add(any(String.class), any(SolrInputDocument.class)))
                 .thenThrow(BaseHttpSolrClient.RemoteSolrException.class);
-        wrapper.index(new SolrInputDocument());
+        assertFalse(wrapper.index(new SolrInputDocument()));
     }
 
     @Test
