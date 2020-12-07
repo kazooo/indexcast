@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.client.solrj.impl.BaseHttpSolrClient;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.response.SolrPingResponse;
 import org.apache.solr.common.SolrDocumentList;
@@ -69,6 +70,10 @@ public class SolrClientWrapper {
                 log.error("Can't index document at " + solrHost + "!");
                 e.printStackTrace();
                 pingSolrAndWait();
+            } catch (BaseHttpSolrClient.RemoteSolrException e) {
+                log.error("Can't index document at " + solrHost + " due to remote server error!");
+                e.printStackTrace();
+                break;
             }
         }
     }

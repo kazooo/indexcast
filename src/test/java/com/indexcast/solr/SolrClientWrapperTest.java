@@ -3,6 +3,7 @@ package com.indexcast.solr;
 import com.indexcast.component.Pair;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.client.solrj.impl.BaseHttpSolrClient;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.response.SolrPingResponse;
@@ -94,6 +95,13 @@ public class SolrClientWrapperTest {
         when(mockSolrClient.add(any(String.class), any(SolrInputDocument.class)))
                 .thenThrow(SolrServerException.class);
         threadWaitingSuccessfully(() -> wrapper.index(new SolrInputDocument()));
+    }
+
+    @Test(timeout = 1000)
+    public void testCatchRemoteError() throws IOException, SolrServerException {
+        when(mockSolrClient.add(any(String.class), any(SolrInputDocument.class)))
+                .thenThrow(BaseHttpSolrClient.RemoteSolrException.class);
+        wrapper.index(new SolrInputDocument());
     }
 
     @Test
