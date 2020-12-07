@@ -53,6 +53,6 @@ public class MigrationStepBuilder {
     }
 
     public CompositeItemProcessor<List<SolrInputDocument>, List<SolrInputDocument>> compositeProcessor() {
-        return processorComposer.composite();
+        return processorComposer.compose();
     }
 }

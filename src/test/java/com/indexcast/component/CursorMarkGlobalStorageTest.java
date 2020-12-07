@@ -44,7 +44,19 @@ public class CursorMarkGlobalStorageTest {
     }
 
     @Test
-    public void testWhenStorageIsClosed() {
+    public void testInterruptDuringWaiting() throws InterruptedException {
+        Thread t = new Thread(() -> {
+            storage.getNextCursorAndObjNum();
+        });
+        t.start();
+        Thread.sleep(1000);
+        assertTrue(t.isAlive());
+        Thread.sleep(1000);
+        t.interrupt();
+    }
+
+    @Test
+    public void testStorageIsClosed() {
         storage.close();
         assertTrue(storage.isClosed());
         assertNull(storage.getNextCursorAndObjNum());
